@@ -104,6 +104,5 @@ class ParserBrioni:
         subtitle = '--'
         color = item['colors'][0]['label']
         details = item['details']
-        # if item['mfc'] == "SOR80LPA9061000":
         images = await self.get_photos(item['objectID'], item['mfc'])
         await self.create_entry(article, title, subtitle, color, self.category, details, images)

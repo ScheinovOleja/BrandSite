@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from parser.handlers.collectors.brioni import ParserBrioni
+from parser.handlers.collectors.stefano import ParserStefano
 from parser.models import Base
 
 
@@ -105,6 +106,16 @@ class Parser:
                 "Мужская верхняя одежда"
             ),
         ]
+        self.links_stefano = [
+            (
+                "",
+                ""
+            ),
+            (),
+            (),
+            (),
+            (),
+        ]
 
     async def start_all_parsers(self):
         # for link_zilli in self.links_zilli:
@@ -125,10 +136,12 @@ class Parser:
         # for link_brunello in self.links_brunello:
         #     task_brunello = ParserBrunello(link_brunello, self.Session())
         #     await task_brunello.main()
-        for link_brioni in self.links_brioni:
-            task_brioni = ParserBrioni(link_brioni, self.Session())
-            await task_brioni.main()
-
+        # for link_brioni in self.links_brioni:
+        #     task_brioni = ParserBrioni(link_brioni, self.Session())
+        #     await task_brioni.main()
+        for link_stefano in self.links_brioni:
+            task_stefano = ParserStefano(link_stefano, self.Session())
+            await task_stefano.main()
 
 if __name__ == '__main__':
     parser = Parser()
