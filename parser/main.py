@@ -3,7 +3,7 @@ import asyncio
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from parser.handlers.collectors.chanel import ParserChanel
+from parser.handlers.collectors.brunello import ParserBrunello
 from parser.models import Base
 
 
@@ -82,6 +82,23 @@ class Parser:
                 "Другая сумка"
             ),
         ]
+        self.links_brunello = [
+            (
+                "https://shop.brunellocucinelli.com/ru-ru/%D0%B6%D0%B5%D0%BD%D1%89%D0%B8%D0%BD%D1%8B/%D0%BE%D0%B4%D0%B5%D0%B6%D0%B4%D0%B0/%D0%B2%D0%B5%D1%80%D1%85%D0%BD%D1%8F%D1%8F-%D0%BE%D0%B4%D0%B5%D0%B6%D0%B4%D0%B0/?start=0&sz=100&template=search/grid3Template",
+                "Женская верхняя одежда"),
+            (
+                "https://shop.brunellocucinelli.com/ru-ru/%D0%B6%D0%B5%D0%BD%D1%89%D0%B8%D0%BD%D1%8B/%D0%BE%D0%B4%D0%B5%D0%B6%D0%B4%D0%B0/%D0%BF%D0%B8%D0%B4%D0%B6%D0%B0%D0%BA%D0%B8/?template=search/grid3Template&start=0&sz=100",
+                "Женские пиджаки"
+            ),
+            (
+                "https://shop.brunellocucinelli.com/ru-ru/%D0%BC%D1%83%D0%B6%D1%87%D0%B8%D0%BD%D1%8B/%D0%BE%D0%B4%D0%B5%D0%B6%D0%B4%D0%B0/%D0%B2%D0%B5%D1%80%D1%85%D0%BD%D1%8F%D1%8F-%D0%BE%D0%B4%D0%B5%D0%B6%D0%B4%D0%B0/?template=search/grid3Template&start=0&sz=200",
+                "Мужская верхняя одежда"
+            ),
+            (
+                "https://shop.brunellocucinelli.com/ru-ru/%D0%BC%D1%83%D0%B6%D1%87%D0%B8%D0%BD%D1%8B/%D0%BE%D0%B4%D0%B5%D0%B6%D0%B4%D0%B0/%D0%BF%D0%B8%D0%B4%D0%B6%D0%B0%D0%BA%D0%B8/?template=search/grid3Template&start=0&sz=200",
+                "Мужские пиджаки"
+            ),
+        ]
 
     async def start_all_parsers(self):
         # for link_zilli in self.links_zilli:
@@ -96,9 +113,12 @@ class Parser:
         # for link_louis in self.links_louis:
         #     task_louis = ParserLouis(link_louis, self.Session())
         #     await task_louis.main()
-        for link_chanel in self.links_chanel:
-            task_dior = ParserChanel(link_chanel, self.Session())
-            await task_dior.main()
+        # for link_chanel in self.links_chanel:
+        #     task_dior = ParserChanel(link_chanel, self.Session())
+        #     await task_dior.main()
+        for link_brunello in self.links_brunello:
+            task_brunello = ParserBrunello(link_brunello, self.Session())
+            await task_brunello.main()
 
 
 if __name__ == '__main__':

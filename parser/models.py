@@ -63,3 +63,9 @@ class ChanelData(BaseModel):
     __tablename__ = 'chanel_data'
 
     size = Column(String(64))
+
+
+class BrunelloData(BaseModel):
+    __tablename__ = 'brunello_data'
+
+    details = Column(String(1024))
