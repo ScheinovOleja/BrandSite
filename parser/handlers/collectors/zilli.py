@@ -12,7 +12,6 @@ from parser.models import ZilliData, get_or_create
 class ParserZilli:
 
     def __init__(self, url: str, session: Session):
-        self.task = None
         self.rate_sem = asyncio.BoundedSemaphore(30)
         self.product_list_links = []
         self.url = url

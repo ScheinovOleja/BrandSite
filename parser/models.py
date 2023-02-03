@@ -11,7 +11,7 @@ class BaseModel(Base):
     article = Column(String(64))
     title = Column(String(256))
     subtitle = Column(String(256))
-    colors = Column(String(64), nullable=True, default='-')
+    color = Column(String(64), nullable=True, default='-')
     category = Column(String(128))
     images = Column(JSON())
 
@@ -50,4 +50,16 @@ class DiorData(BaseModel):
 class LoropianaData(BaseModel):
     __tablename__ = 'loropiana_data'
 
-    details = Column(String(512))
+    details = Column(String(1024))
+
+
+class LouisData(BaseModel):
+    __tablename__ = 'louisvuitton_data'
+
+    description = Column(String(1024))
+
+
+class ChanelData(BaseModel):
+    __tablename__ = 'chanel_data'
+
+    size = Column(String(64))
