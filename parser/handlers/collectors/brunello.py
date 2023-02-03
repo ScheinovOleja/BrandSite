@@ -88,4 +88,3 @@ class ParserBrunello:
                     await self.collect_variant(data['id']+item['id'])
             else:
                 await self.collect_variant(data['sku'])
-

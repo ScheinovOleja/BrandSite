@@ -3,7 +3,7 @@ import asyncio
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from parser.handlers.collectors.brunello import ParserBrunello
+from parser.handlers.collectors.brioni import ParserBrioni
 from parser.models import Base
 
 
@@ -99,6 +99,12 @@ class Parser:
                 "Мужские пиджаки"
             ),
         ]
+        self.links_brioni = [
+            (
+                "https://wnp6tqnc8r-3.algolianet.com/1/indexes/prod_primary_index_products_milan-noeu_ru/query",
+                "Мужская верхняя одежда"
+            ),
+        ]
 
     async def start_all_parsers(self):
         # for link_zilli in self.links_zilli:
@@ -116,9 +122,12 @@ class Parser:
         # for link_chanel in self.links_chanel:
         #     task_dior = ParserChanel(link_chanel, self.Session())
         #     await task_dior.main()
-        for link_brunello in self.links_brunello:
-            task_brunello = ParserBrunello(link_brunello, self.Session())
-            await task_brunello.main()
+        # for link_brunello in self.links_brunello:
+        #     task_brunello = ParserBrunello(link_brunello, self.Session())
+        #     await task_brunello.main()
+        for link_brioni in self.links_brioni:
+            task_brioni = ParserBrioni(link_brioni, self.Session())
+            await task_brioni.main()
 
 
 if __name__ == '__main__':

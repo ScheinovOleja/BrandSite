@@ -69,3 +69,9 @@ class BrunelloData(BaseModel):
     __tablename__ = 'brunello_data'
 
     details = Column(String(1024))
+
+
+class BrioniData(BaseModel):
+    __tablename__ = 'brioni_data'
+
+    details = Column(String(1024))
