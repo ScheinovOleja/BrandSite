@@ -3,8 +3,7 @@ import asyncio
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from parser.handlers.collectors.brioni import ParserBrioni
-from parser.handlers.collectors.stefano import ParserStefano
+from parser.handlers.collectors.bottega import ParserBottega
 from parser.models import Base
 
 
@@ -116,6 +115,14 @@ class Parser:
             (),
             (),
         ]
+        self.links_bottega = [
+            ("https://www.bottegaveneta.com/on/demandware.store/Sites-BV-R-INTL-Site/en_ZW/Search-UpdateGrid?"
+             "cgid=women-bags&prefn1=akeneo_employeesSalesVisible&prefv1=false&prefn2=akeneo_markDownInto&"
+             "prefv2=no_season&prefn3=countryInclusion&prefv3=ZW&start=0&sz=1000", 'Женские сумки'),
+            ("https://www.bottegaveneta.com/on/demandware.store/Sites-BV-R-INTL-Site/en_ZW/Search-UpdateGrid?"
+             "cgid=women-belts&prefn1=akeneo_employeesSalesVisible&prefv1=false&prefn2=akeneo_markDownInto&"
+             "prefv2=no_season&prefn3=countryInclusion&prefv3=ZW&start=0&sz=1000", 'Женские ремни'),
+        ]
 
     async def start_all_parsers(self):
         # for link_zilli in self.links_zilli:
@@ -136,12 +143,16 @@ class Parser:
         # for link_brunello in self.links_brunello:
         #     task_brunello = ParserBrunello(link_brunello, self.Session())
         #     await task_brunello.main()
-        for link_brioni in self.links_brioni:
-            task_brioni = ParserBrioni(link_brioni, self.Session())
-            await task_brioni.main()
+        # for link_brioni in self.links_brioni:
+        #     task_brioni = ParserBrioni(link_brioni, self.Session())
+        #     await task_brioni.main()
         # for link_stefano in self.links_brioni:
         #     task_stefano = ParserStefano(link_stefano, self.Session())
         #     await task_stefano.main()
+        for link_bottega in self.links_bottega:
+            task_stefano = ParserBottega(link_bottega, self.Session())
+            await task_stefano.main()
+
 
 if __name__ == '__main__':
     parser = Parser()
