@@ -136,12 +136,12 @@ class Parser:
         # for link_brunello in self.links_brunello:
         #     task_brunello = ParserBrunello(link_brunello, self.Session())
         #     await task_brunello.main()
-        # for link_brioni in self.links_brioni:
-        #     task_brioni = ParserBrioni(link_brioni, self.Session())
-        #     await task_brioni.main()
-        for link_stefano in self.links_brioni:
-            task_stefano = ParserStefano(link_stefano, self.Session())
-            await task_stefano.main()
+        for link_brioni in self.links_brioni:
+            task_brioni = ParserBrioni(link_brioni, self.Session())
+            await task_brioni.main()
+        # for link_stefano in self.links_brioni:
+        #     task_stefano = ParserStefano(link_stefano, self.Session())
+        #     await task_stefano.main()
 
 if __name__ == '__main__':
     parser = Parser()

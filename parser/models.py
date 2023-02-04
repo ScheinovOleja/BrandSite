@@ -75,6 +75,7 @@ class BrioniData(BaseModel):
     __tablename__ = 'brioni_data'
 
     details = Column(String(1024))
+    materials = Column(String(128))
 
 
 class StefanoData(BaseModel):

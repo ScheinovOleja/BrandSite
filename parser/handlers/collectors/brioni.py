@@ -29,7 +29,7 @@ class ParserBrioni:
             "facetFilters": []
         }
 
-    async def create_entry(self, article, title, subtitle, color, category, details, images):
+    async def create_entry(self, article, title, subtitle, color, category, materials, details, images):
         data = get_or_create(
             self.session,
             BrioniData,
@@ -37,6 +37,7 @@ class ParserBrioni:
             defaults={
                 "title": title,
                 "subtitle": subtitle,
+                "materials": materials,
                 "details": details,
                 "color": color,
                 "category": category,
@@ -56,6 +57,11 @@ class ParserBrioni:
                     f"https://cdn.contentful.com/spaces/w2dr5qwt1rrm/environments/master/entries?links_to_entry={article}&include=2&locale=ru") as response:
                 data = await response.json()
                 data_assets = data['includes']['Asset']
+                materials = ''
+                for entry in data['includes']['Entry']:
+                    if entry['sys']['id'] == article:
+                        for material in entry['fields']['materials']:
+                            materials += f"{material['percentage']}% {material['type']}\n"
                 for entry in data['includes']['Entry']:
                     if "wrapperImage" in entry['sys']['id']:
                         photo_ids.append(entry['fields']['title'])
@@ -68,7 +74,7 @@ class ParserBrioni:
                         [f"https:{asset['fields']['file']['url']}" for photo_id in photo_ids if
                          asset['fields']['title'].replace('.jpg', '') == photo_id and mfc in photo_id])
         await asyncio.sleep(0.5)
-        return photos
+        return photos, materials
 
     async def get_all_products(self):
         async with ClientSession(headers=self.headers) as session:
@@ -102,7 +108,7 @@ class ParserBrioni:
         article = item['mfc']
         title = item['title']
         subtitle = '--'
-        color = item['colors'][0]['label']
         details = item['details']
-        images = await self.get_photos(item['objectID'], item['mfc'])
-        await self.create_entry(article, title, subtitle, color, self.category, details, images)
+        color = item['colors'][0]['label']
+        images, materials = await self.get_photos(item['objectID'], item['mfc'])
+        await self.create_entry(article, title, subtitle, color, self.category, materials, details, images)
