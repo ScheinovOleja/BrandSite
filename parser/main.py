@@ -3,8 +3,8 @@ import asyncio
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from parser.handlers.collectors.bottega import ParserBottega
 from parser.handlers.collectors.celine import ParserCeline
+from parser.handlers.collectors.laurent import ParserLaurent
 from parser.models import Base
 
 
@@ -298,6 +298,39 @@ class Parser:
                 "Женские маленькие аксессуары"
             ),
         ]
+        self.links_laurent = [
+            (
+                "https://www.ysl.com/on/demandware.store/Sites-SLP-INTL-Site/en_ZW/Search-UpdateGrid?"
+                "cgid=view-all-handbags-women&prefn1=akeneo_employeesSalesVisible&prefv1=false&prefn2=akeneo_markDownInto"
+                "&prefv2=no_season&prefn3=countryInclusion&prefv3=ZW&start=0&sz=1000",
+                "Женские сумки"
+            ),
+            (
+                "https://www.ysl.com/on/demandware.store/Sites-SLP-INTL-Site/en_ZW/Search-UpdateGrid?"
+                "cgid=view-all-mini-bags-women&prefn1=akeneo_employeesSalesVisible&prefv1=false&prefn2=akeneo_markDownInto"
+                "&prefv2=no_season&prefn3=countryInclusion&prefv3=ZW&start=0&sz=1000",
+                "Женские мини-сумки"
+            ),
+            (
+                "https://www.ysl.com/on/demandware.store/Sites-SLP-INTL-Site/en_ZW/Search-UpdateGrid?"
+                "cgid=view-all-slg-women&prefn1=akeneo_employeesSalesVisible&prefv1=false&prefn2=akeneo_markDownInto"
+                "&prefv2=no_season&prefn3=countryInclusion&prefv3=ZW&start=0&sz=1000",
+                "Женские маленькие кожаные изделия"
+            ),
+            (
+                "https://www.ysl.com/on/demandware.store/Sites-SLP-INTL-Site/en_ZW/Search-UpdateGrid?"
+                "cgid=belts-and-belt-bags-women&prefn1=akeneo_employeesSalesVisible&prefv1=false&prefn2=akeneo_markDownInto"
+                "&prefv2=no_season&prefn3=countryInclusion&prefv3=ZW&start=0&sz=1000",
+                "Женские ремни и поясные сумки"
+            ),
+            (
+                "https://www.ysl.com/on/demandware.store/Sites-SLP-INTL-Site/en_ZW/Search-UpdateGrid?"
+                "cgid=view-all-shoes-women&prefn1=akeneo_employeesSalesVisible&prefv1=false&prefn2=akeneo_markDownInto"
+                "&prefv2=no_season&prefn3=countryInclusion&prefv3=ZW&start=0&sz=1000",
+                "Женская обувь"
+            ),
+
+        ]
 
     async def start_all_parsers(self):
         # for link_zilli in self.links_zilli:
@@ -327,9 +360,12 @@ class Parser:
         # for link_bottega in self.links_bottega:
         #     task_stefano = ParserBottega(link_bottega, self.Session())
         #     await task_stefano.main()
-        for link_celine in self.links_celine:
-            task_celine = ParserCeline(link_celine, self.Session())
-            await task_celine.main()
+        # for link_celine in self.links_celine:
+        #     task_celine = ParserCeline(link_celine, self.Session())
+        #     await task_celine.main()
+        for link_laurent in self.links_laurent:
+            task_laurent = ParserLaurent(link_laurent, self.Session())
+            await task_laurent.main()
 
 
 if __name__ == '__main__':

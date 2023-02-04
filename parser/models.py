@@ -94,3 +94,9 @@ class CelineData(BaseModel):
     __tablename__ = 'celine_data'
 
     details = Column(String(1024))
+
+
+class LaurentData(BaseModel):
+    __tablename__ = 'laurent_data'
+
+    details = Column(String(1024))
