@@ -88,3 +88,9 @@ class BottegaData(BaseModel):
     __tablename__ = 'bottega_data'
 
     details = Column(String(1024))
+
+
+class CelineData(BaseModel):
+    __tablename__ = 'celine_data'
+
+    details = Column(String(1024))

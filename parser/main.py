@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from parser.handlers.collectors.bottega import ParserBottega
+from parser.handlers.collectors.celine import ParserCeline
 from parser.models import Base
 
 
@@ -123,6 +124,180 @@ class Parser:
              "cgid=women-belts&prefn1=akeneo_employeesSalesVisible&prefv1=false&prefn2=akeneo_markDownInto&"
              "prefv2=no_season&prefn3=countryInclusion&prefv3=ZW&start=0&sz=1000", 'Женские ремни'),
         ]
+        self.links_celine = [
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?cgid=A0302&start=0&"
+                "sz=1000&selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0302&start=0&sz=1000",
+                "Женские сумки 16"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?cgid=A0303&start=0&"
+                "sz=1000&selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0303&start=0&sz=1000",
+                "Женские сумки 'Триумф'"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?cgid=A0320&start=0&"
+                "sz=1000&selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0320&start=0&sz=1000",
+                "Женские сумки 'Кожа Триумф'"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0311&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0311&start=0&sz=1000",
+                "Женские сумки 'Холс Триумф'"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0317&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0317&start=0&sz=1000",
+                "Женские сумки 'АВА'"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0314&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0314&start=0&sz=1000",
+                "Женские сумки 'Корзина'"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0305&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0305&start=0&sz=1000",
+                "Женские сумки 'Классическая'"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0304&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0304&start=0&sz=1000",
+                "Женские поясные сумки"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0306&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0306&start=0&sz=1000",
+                "Женские сумки 'Рюкзак'"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0308&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0308&start=0&sz=1000",
+                "Женские сумки 'Больше линий'"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0321&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0321&start=0&sz=1000",
+                "Женские мини-сумки"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A00101&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A00101&start=0&sz=1000",
+                "Женские Ремни"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A00103&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A00103&start=0&sz=1000",
+                "Женские шапки и шарфы"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A00107&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A00107&start=0&sz=1000",
+                "Женское пляжное"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0022&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0022&start=0&sz=1000",
+                "Женские ботинки"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0023&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0023&start=0&sz=1000",
+                "Женские лоферы и балетки"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0021&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0021&start=0&sz=1000",
+                "Женские Сандали"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0020&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0020&start=0&sz=1000",
+                "Женские пампы"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0024&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0024&start=0&sz=1000",
+                "Женские кроссовки"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0046&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0046&start=0&sz=1000",
+                "Женские мелкие кожанные изделия 'Холс Триумф'"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0040&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0040&start=0&sz=1000",
+                "Женские кошельки"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0041&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0041&start=0&sz=1000",
+                "Женские визитницы"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A00106&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A00106&start=0&sz=1000",
+                "Женские кожаные изделия"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0044&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0044&start=0&sz=1000",
+                "Женские маленькие аксессуары"
+            ),
+            (
+                "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0044&start=0&sz=1000&"
+                "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
+                "cgid=A0044&start=0&sz=1000",
+                "Женские маленькие аксессуары"
+            ),
+        ]
 
     async def start_all_parsers(self):
         # for link_zilli in self.links_zilli:
@@ -149,9 +324,12 @@ class Parser:
         # for link_stefano in self.links_brioni:
         #     task_stefano = ParserStefano(link_stefano, self.Session())
         #     await task_stefano.main()
-        for link_bottega in self.links_bottega:
-            task_stefano = ParserBottega(link_bottega, self.Session())
-            await task_stefano.main()
+        # for link_bottega in self.links_bottega:
+        #     task_stefano = ParserBottega(link_bottega, self.Session())
+        #     await task_stefano.main()
+        for link_celine in self.links_celine:
+            task_celine = ParserCeline(link_celine, self.Session())
+            await task_celine.main()
 
 
 if __name__ == '__main__':
