@@ -5,7 +5,7 @@ import re
 from aiohttp import ClientSession
 from bs4 import BeautifulSoup
 
-from parser.models import BottegaData, get_or_create
+from parser.models import BrandsData, get_or_create
 
 
 class ParserBottega:
@@ -20,7 +20,7 @@ class ParserBottega:
     async def create_entry(self, article, title, subtitle, color, category, details, images):
         data = get_or_create(
             self.session,
-            BottegaData,
+            BrandsData,
             article=article,
             title=title,
             defaults={
@@ -28,7 +28,8 @@ class ParserBottega:
                 "details": details,
                 "color": color,
                 "category": category,
-                "images": images
+                "images": images,
+                "brand": "bottega"
             }
         )
         if data[1]:
@@ -43,7 +44,7 @@ class ParserBottega:
         while True:
             await asyncio.sleep(0.5)
             try:
-                self.rate_sem.release(  )
+                self.rate_sem.release()
             except ValueError:
                 pass
 

@@ -5,34 +5,20 @@ from aiohttp import ClientSession
 from bs4 import BeautifulSoup
 from sqlalchemy.orm import Session
 
-from parser.models import get_or_create, BrunelloData
+from parser.handlers.general_funcs import BaseParser
+from parser.models import get_or_create, BrandsData
 
 
-class ParserBrunello:
+class ParserBrunello(BaseParser):
 
     def __init__(self, url, session: Session):
+        super(ParserBrunello, self).__init__(url, session)
         self.rate_sem = asyncio.BoundedSemaphore(50)
-        self.url = url[0]
-        self.category = url[1]
-        self.session = session
-        self.all_products = []
-
-    async def delay_wrapper(self, task):
-        await self.rate_sem.acquire()
-        return await task
-
-    async def releaser(self):
-        while True:
-            await asyncio.sleep(0.5)
-            try:
-                self.rate_sem.release()
-            except ValueError:
-                pass
 
     async def create_entry(self, article, title, subtitle, color, category, details, images):
         data = get_or_create(
             self.session,
-            BrunelloData,
+            BrandsData,
             article=article,
             defaults={
                 "title": title,
@@ -40,7 +26,8 @@ class ParserBrunello:
                 "details": details,
                 "color": color,
                 "category": category,
-                "images": images
+                "images": images,
+                "brand": "brunello"
             }
         )
         if data[1]:
@@ -53,13 +40,6 @@ class ParserBrunello:
                 soup = BeautifulSoup(await response.text(), 'lxml')
                 all_links = soup.select("div.product-grid > div.col-sm-4 > div.product")
                 self.all_products.extend([url.get('data-pid') for url in all_links])
-
-    async def main(self):
-        await self.get_all_products()
-        rt = asyncio.create_task(self.releaser())
-        await asyncio.gather(
-            *[self.delay_wrapper(self.collect(product)) for product in self.all_products])
-        rt.cancel()
 
     async def collect_variant(self, article):
         async with ClientSession() as session:

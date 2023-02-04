@@ -6,24 +6,22 @@ from aiohttp import ClientSession
 from bs4 import BeautifulSoup
 from sqlalchemy.orm import Session
 
-from parser.models import get_or_create, FordData
+from parser.handlers.general_funcs import BaseParser
+from parser.models import get_or_create, BrandsData
 
 
-class ParserFord:
+class ParserFord(BaseParser):
 
     def __init__(self, url, session: Session):
-        self.rate_sem = asyncio.BoundedSemaphore(50)
-        self.url = url[0]
-        self.category = url[1]
-        self.session = session
-        self.all_products = []
+        super(ParserFord, self).__init__(url, session)
+        self.rate_sem = asyncio.BoundedSemaphore(100)
         self.start = 0
         self.size = 60
 
     async def create_entry(self, article, title, subtitle, color, category, details, images):
         data = get_or_create(
             self.session,
-            FordData,
+            BrandsData,
             article=article,
             color=color,
             defaults={
@@ -31,7 +29,8 @@ class ParserFord:
                 "subtitle": subtitle,
                 "details": details,
                 "category": category,
-                "images": images
+                "images": images,
+                "brand": "ford"
             }
         )
         if data[1]:
@@ -47,18 +46,6 @@ class ParserFord:
                 self.all_products.extend(
                     [(link.get('href'), link.parent.get('data-itemsku')) for link in all_product])
                 self.start += self.size
-
-    async def delay_wrapper(self, task):
-        await self.rate_sem.acquire()
-        return await task
-
-    async def releaser(self):
-        while True:
-            await asyncio.sleep(0.5)
-            try:
-                self.rate_sem.release()
-            except ValueError:
-                pass
 
     async def main(self):
         await self.get_all_products()

@@ -6,30 +6,30 @@ from aiohttp import ClientSession, TCPConnector
 from bs4 import BeautifulSoup, Tag, NavigableString
 from sqlalchemy.orm import Session
 
-from parser.models import ZilliData, get_or_create
+from parser.handlers.general_funcs import BaseParser
+from parser.models import BrandsData, get_or_create
 
 
-class ParserZilli:
+class ParserZilli(BaseParser):
 
-    def __init__(self, url: str, session: Session):
+    def __init__(self, url, session: Session):
+        super(ParserZilli, self).__init__(url, session)
         self.rate_sem = asyncio.BoundedSemaphore(30)
-        self.product_list_links = []
-        self.url = url
-        self.session = session
         self.more_detail_raw = []
 
     async def create_entry(self, article, title, subtitle, more_detail, materials, photos):
         data = get_or_create(
             self.session,
-            ZilliData,
+            BrandsData,
             article=article,
             title=title,
             defaults={
                 "subtitle": subtitle,
-                "more_details": more_detail,
+                "details": more_detail,
                 "materials": materials,
-                "category": self.url.split("en/")[1],
-                "images": photos
+                "category": self.category,
+                "images": photos,
+                "brand": "zilli"
             }
         )
         if data[1]:
@@ -39,7 +39,7 @@ class ParserZilli:
     async def get_title(self, soup):
         try:
             title = soup.find('h1', class_='main-title').text
-        except BaseException as e:
+        except BaseException:
             title = "--"
         await asyncio.sleep(0.5)
         return title
@@ -48,7 +48,7 @@ class ParserZilli:
         try:
             subtitle = soup.find('div', id='product-description-short')
             subtitle = [item for item in subtitle.children if not isinstance(item, NavigableString)][0].text
-        except BaseException as e:
+        except BaseException:
             subtitle = '--'
         await asyncio.sleep(0.5)
         return subtitle
@@ -64,7 +64,7 @@ class ParserZilli:
             else:
                 more_detail = soup.select_one('.product_infos_tabs > li:nth-child(1) > div:nth-child(2) > '
                                               'ul:nth-child(1)').text
-        except BaseException as e:
+        except BaseException:
             more_detail = "--"
         await asyncio.sleep(0.5)
         return more_detail
@@ -80,7 +80,7 @@ class ParserZilli:
             else:
                 materials = soup.select_one('.product_infos_tabs > li:nth-child(2) > div:nth-child(2) > '
                                             'p:nth-child(1)').text
-        except BaseException as e:
+        except BaseException:
             materials = '--'
         await asyncio.sleep(0.5)
         return materials
@@ -89,7 +89,7 @@ class ParserZilli:
         try:
             article = soup.find('li', string=[re.compile(r"Ref. *"), re.compile(r"Réf. *"), re.compile(
                 r"[A-Z0-9]{3,}-[A-Z0-9]{3,}-[A-Z0-9]{3,}/[A-Z0-9]{3,} [A-Z0-9]*")]).text
-        except BaseException as e:
+        except BaseException:
             if isinstance(self.more_detail_raw[-2], Tag) and len(self.more_detail_raw) > 2:
                 article = self.more_detail_raw[-2].text
             elif isinstance(self.more_detail_raw[-2], Tag) and len(self.more_detail_raw) <= 2:
@@ -100,33 +100,14 @@ class ParserZilli:
         await asyncio.sleep(0.5)
         return article
 
-    async def delay_wrapper(self, task):
-        await self.rate_sem.acquire()
-        return await task
-
-    async def releaser(self):
-        while True:
-            await asyncio.sleep(0.05)
-            try:
-                self.rate_sem.release()
-            except ValueError:
-                pass
-
-    async def main(self):
-        await self.get_links()
-        rt = asyncio.create_task(self.releaser())
-        await asyncio.gather(
-            *[self.delay_wrapper(self.collect_zilli(link)) for link in self.product_list_links])
-        rt.cancel()
-
-    async def get_links(self):
+    async def get_all_products(self):
         async with ClientSession(connector=TCPConnector(verify_ssl=False)) as session:
             async with session.get(self.url) as main_response:
                 main_soup = BeautifulSoup(await main_response.text(), "lxml")
-                self.product_list_links = main_soup.find_all('a', class_="product-thumbnail")
-        return self.product_list_links
+                self.all_products = main_soup.find_all('a', class_="product-thumbnail")
+        return self.all_products
 
-    async def collect_zilli(self, link):
+    async def collect(self, link):
         try:
             async with ClientSession(connector=TCPConnector(verify_ssl=False)) as session:
                 async with session.get(link.attrs['href']) as response:

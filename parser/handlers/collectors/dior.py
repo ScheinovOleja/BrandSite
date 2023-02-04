@@ -6,15 +6,14 @@ from aiohttp import ClientSession, TCPConnector
 from bs4 import BeautifulSoup
 from sqlalchemy.orm import Session
 
-from parser.models import get_or_create, DiorData
+from parser.handlers.general_funcs import BaseParser
+from parser.models import get_or_create, BrandsData
 
 
-class ParserDior:
+class ParserDior(BaseParser):
 
     def __init__(self, url, session: Session):
-        self.url = url[0]
-        self.target = url[1]
-        self.product_list = []
+        super(ParserDior, self).__init__(url, session)
         self.detail_url = "https://api-fashion.dior.com/graph?GetProductStocks="
         self.dior_url = 'https://www.dior.com'
         self.rate_sem = asyncio.BoundedSemaphore(10)
@@ -59,7 +58,6 @@ class ParserDior:
             "x-dior-universe": "couture",
             "x-dior-locale": "ru_ru"
         }
-        self.session = session
 
     async def get_photos(self, url, code):
         photos = []
@@ -78,49 +76,31 @@ class ParserDior:
     async def create_entry(self, article, title, subtitle, size_and_fit, colours, photos_links):
         data = get_or_create(
             self.session,
-            DiorData,
+            BrandsData,
             article=article,
             title=title,
             defaults={
                 "subtitle": subtitle,
                 "size_and_fit": size_and_fit,
                 "colors": colours,
-                "category": self.target,
-                "images": photos_links
+                "category": self.category,
+                "images": photos_links,
+                "brand": "dior"
             }
         )
         if data[1]:
             self.session.commit()
         await asyncio.sleep(0.5)
 
-    async def get_links(self):
+    async def get_all_products(self):
         async with ClientSession(headers=self.main_headers, connector=TCPConnector(verify_ssl=False)) as session:
             async with session.post(
-                    self.url, json=self.main_body_bags if self.target == 'bags' else self.main_body_belts) as response:
+                    self.url,
+                    json=self.main_body_bags if self.category == 'bags' else self.main_body_belts) as response:
                 main_json = json.loads(await response.text())
-        self.product_list = main_json['results'][0]['hits']
-        return self.product_list
+        self.all_products = main_json['results'][0]['hits']
 
-    async def delay_wrapper(self, task):
-        await self.rate_sem.acquire()
-        return await task
-
-    async def releaser(self):
-        while True:
-            await asyncio.sleep(0.05)
-            try:
-                self.rate_sem.release()
-            except ValueError:
-                pass
-
-    async def main(self):
-        await self.get_links()
-        rt = asyncio.create_task(self.releaser())
-        await asyncio.gather(
-            *[self.delay_wrapper(self.collect_dior(product)) for product in self.product_list])
-        rt.cancel()
-
-    async def collect_dior(self, product):
+    async def collect(self, product):
         try:
             article = f"{product['style_ref']}_{product['color']['code']}"
             self.second_body['variables']['id'] = article

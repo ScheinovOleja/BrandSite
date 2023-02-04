@@ -6,16 +6,15 @@ from aiohttp import ClientSession
 from bs4 import BeautifulSoup
 from sqlalchemy.orm import Session
 
-from parser.models import get_or_create, ChanelData
+from parser.handlers.general_funcs import BaseParser
+from parser.models import get_or_create, BrandsData
 
 
-class ParserChanel:
+class ParserChanel(BaseParser):
 
     def __init__(self, url, session: Session):
         self.rate_sem = asyncio.BoundedSemaphore(5)
-        self.url = url[0]
-        self.category = url[1]
-        self.session = session
+        super(ParserChanel, self).__init__(url, session)
         self.headers = {
             "Host": "www.chanel.com",
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/109.0",
@@ -56,12 +55,11 @@ class ParserChanel:
             "OptanonConsent": "isGpcEnabled=0&datestamp=Thu+Feb+02+2023+18:04:06+GMT+0100+(Ð¦ÐµÐ½ÑÑÐ°Ð»ÑÐ½Ð°Ñ+ÐÐ²ÑÐ¾Ð¿Ð°,+ÑÑÐ°Ð½Ð´Ð°ÑÑÐ½Ð¾Ðµ+Ð²ÑÐµÐ¼Ñ)&version=6.36.0&isIABGlobal=false&hosts=&genVendors=&consentId=1b924c4b-79af-49e1-9e2b-b2572c3e90ef&interactionCount=1&landingPath=NotLandingPage&groups=1:1,2:1,3:1,4:1&geolocation=RU;EU&AwaitingReconsent=false",
             "segment": "none"
         }
-        self.all_products = []
 
     async def create_entry(self, article, title, subtitle, color, category, size, images):
         data = get_or_create(
             self.session,
-            ChanelData,
+            BrandsData,
             article=article,
             title=title,
             defaults={
@@ -69,24 +67,13 @@ class ParserChanel:
                 "size": size,
                 "color": color,
                 "category": category,
-                "images": images
+                "images": images,
+                "brand": "chanel"
             }
         )
         if data[1]:
             self.session.commit()
         await asyncio.sleep(random.choice([1.5, 2]))
-
-    async def delay_wrapper(self, task):
-        await self.rate_sem.acquire()
-        return await task
-
-    async def releaser(self):
-        while True:
-            await asyncio.sleep(0.5)
-            try:
-                self.rate_sem.release()
-            except ValueError:
-                pass
 
     async def get_all_products(self):
         async with ClientSession(headers=self.headers, cookies=self.cookies) as session:
@@ -94,13 +81,6 @@ class ParserChanel:
                 data = json.loads(await response.json())
                 self.all_products.extend([item for item in data['elements']])
                 await asyncio.sleep(random.randint(1, 3))
-
-    async def main(self):
-        await self.get_all_products()
-        rt = asyncio.create_task(self.releaser())
-        await asyncio.gather(
-            *[self.delay_wrapper(self.collect(product)) for product in self.all_products])
-        rt.cancel()
 
     async def collect(self, item):
         async with ClientSession(headers=self.headers, cookies=self.cookies) as session:
@@ -118,7 +98,7 @@ class ParserChanel:
                 async with session.get(f"https://www.chanel.com/ru/fashion/p/{item['code']}") as response:
                     soup = BeautifulSoup(await response.text(), "lxml")
                     size = soup.find("span", class_="js-dimension").text
-            except BaseException as e:
+            except BaseException:
                 return
             images = {"photo": []}
             try:

@@ -5,22 +5,20 @@ from aiohttp import ClientSession
 from bs4 import BeautifulSoup
 from sqlalchemy.orm import Session
 
-from parser.models import get_or_create, CelineData
+from parser.handlers.general_funcs import BaseParser
+from parser.models import get_or_create, BrandsData
 
 
-class ParserCeline:
+class ParserCeline(BaseParser):
 
     def __init__(self, url, session: Session):
         self.rate_sem = asyncio.BoundedSemaphore(50)
-        self.url = url[0]
-        self.category = url[1]
-        self.session = session
-        self.all_products = []
+        super(ParserCeline, self).__init__(url, session)
 
     async def create_entry(self, article, title, subtitle, color, category, details, images):
         data = get_or_create(
             self.session,
-            CelineData,
+            BrandsData,
             article=article,
             title=title,
             defaults={
@@ -28,24 +26,13 @@ class ParserCeline:
                 "details": details,
                 "color": color,
                 "category": category,
-                "images": images
+                "images": images,
+                "brand": "celine"
             }
         )
         if data[1]:
             self.session.commit()
         await asyncio.sleep(random.choice([1.5, 2]))
-
-    async def delay_wrapper(self, task):
-        await self.rate_sem.acquire()
-        return await task
-
-    async def releaser(self):
-        while True:
-            await asyncio.sleep(0.5)
-            try:
-                self.rate_sem.release()
-            except ValueError:
-                pass
 
     async def get_all_products(self):
         async with ClientSession() as session:

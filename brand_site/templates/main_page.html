@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}
+    <title>Выбор бренда</title>
+{% endblock %}
+{% block content %}
+    <div class="box">
+        {% for brand in brands %}
+            <div>
+                <a href="{{ url_for('server_app.choice_category', brand=brand[1]) }}">{{ brand[0] }}</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -5,11 +5,13 @@ import re
 from aiohttp import ClientSession
 from sqlalchemy.orm import Session
 
-from parser.models import get_or_create, LouisData
+from parser.handlers.general_funcs import BaseParser
+from parser.models import get_or_create, BrandsData
 
 
-class ParserLouis:
+class ParserLouis(BaseParser):
     def __init__(self, url, session: Session):
+        super(ParserLouis, self).__init__(url, session)
         self.rate_sem = asyncio.BoundedSemaphore(50)
         self.headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
@@ -22,29 +24,13 @@ class ParserLouis:
             "Upgrade-Insecure-Requests": "1",
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/109.0"
         }
-        self.url = url[0]
-        self.category = url[1]
-        self.session = session
         self.page = 0
         self.max_page = 999
-        self.all_products = []
-
-    async def delay_wrapper(self, task):
-        await self.rate_sem.acquire()
-        return await task
-
-    async def releaser(self):
-        while True:
-            await asyncio.sleep(0.5)
-            try:
-                self.rate_sem.release()
-            except ValueError:
-                pass
 
     async def create_entry(self, article, title, subtitle, color, category, description, images):
         data = get_or_create(
             self.session,
-            LouisData,
+            BrandsData,
             article=article,
             title=title,
             defaults={
@@ -52,7 +38,8 @@ class ParserLouis:
                 "description": description,
                 "color": color,
                 "category": category,
-                "images": images
+                "images": images,
+                "brand": "louis"
             }
         )
         if data[1]:
@@ -72,13 +59,6 @@ class ParserLouis:
                     except KeyError:
                         return
 
-    async def main(self):
-        await self.get_all_products()
-        rt = asyncio.create_task(self.releaser())
-        await asyncio.gather(
-            *[self.delay_wrapper(self.collect(product)) for product in self.all_products])
-        rt.cancel()
-
     async def collect(self, item):
         async with ClientSession(headers=self.headers) as session:
             async with session.get(
@@ -94,7 +74,7 @@ class ParserLouis:
                 try:
                     description = re.sub(r"<p>\D*</p>|<li>|</li>|<ul>|</ul>", '\n', description[0])
                     description = re.sub(r"\n\n", '', description)
-                except BaseException as e:
+                except BaseException:
                     description = '--'
                 images = {'photo': []}
                 images['photo'].extend(

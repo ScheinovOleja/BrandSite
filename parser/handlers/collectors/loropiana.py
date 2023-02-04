@@ -6,17 +6,15 @@ from bs4 import BeautifulSoup
 from fake_headers import Headers
 from sqlalchemy.orm import Session
 
-from parser.models import LoropianaData, get_or_create
+from parser.handlers.general_funcs import BaseParser
+from parser.models import BrandsData, get_or_create
 
 
-class ParserLoropiana:
+class ParserLoropiana(BaseParser):
 
     def __init__(self, url, session: Session):
+        super(ParserLoropiana, self).__init__(url, session)
         self.rate_sem = asyncio.BoundedSemaphore(2)
-        self.url = url[0]
-        self.category = url[1]
-        self.session = session
-        self.product_list = []
         self.page = 0
         self.max_page = 999
         self.headers = Headers(
@@ -29,7 +27,7 @@ class ParserLoropiana:
     async def create_entry(self, article, title, subtitle, color, category, details, images):
         data = get_or_create(
             self.session,
-            LoropianaData,
+            BrandsData,
             article=article,
             title=title,
             defaults={
@@ -37,24 +35,13 @@ class ParserLoropiana:
                 "details": details,
                 "color": color,
                 "category": category,
-                "images": images
+                "images": images,
+                "brand": "loropiana"
             }
         )
         if data[1]:
             self.session.commit()
         await asyncio.sleep(random.choice([1.5, 2]))
-
-    async def delay_wrapper(self, task):
-        await self.rate_sem.acquire()
-        return await task
-
-    async def releaser(self):
-        while True:
-            await asyncio.sleep(0.5)
-            try:
-                self.rate_sem.release()
-            except ValueError:
-                pass
 
     async def get_all_products(self):
         async with ClientSession(headers=self.headers.generate()) as session:
@@ -65,13 +52,6 @@ class ParserLoropiana:
                     self.max_page = items['pagination']['numberOfPages']
                     self.page += 1
                     await asyncio.sleep(random.choice([1.5, 2]))
-
-    async def main(self):
-        await self.get_all_products()
-        rt = asyncio.create_task(self.releaser())
-        await asyncio.gather(
-            *[self.delay_wrapper(self.collect(product)) for product in self.all_products])
-        rt.cancel()
 
     async def collect(self, item):
         async with ClientSession(headers=self.headers.generate()) as session:

@@ -4,17 +4,14 @@ import random
 from aiohttp import ClientSession
 from sqlalchemy.orm import Session
 
-from parser.models import get_or_create, BrioniData
+from parser.handlers.general_funcs import BaseParser
+from parser.models import get_or_create, BrandsData
 
 
-class ParserBrioni:
+class ParserBrioni(BaseParser):
 
     def __init__(self, url, session: Session):
-        self.rate_sem = asyncio.BoundedSemaphore(20)
-        self.url = url[0]
-        self.category = url[1]
-        self.session = session
-        self.all_products = []
+        super(ParserBrioni, self).__init__(url, session)
         self.headers = {
             "Accept": "*/*",
             "Content-Type": "application/json",
@@ -32,7 +29,7 @@ class ParserBrioni:
     async def create_entry(self, article, title, subtitle, color, category, materials, details, images):
         data = get_or_create(
             self.session,
-            BrioniData,
+            BrandsData,
             article=article,
             defaults={
                 "title": title,
@@ -41,14 +38,16 @@ class ParserBrioni:
                 "details": details,
                 "color": color,
                 "category": category,
-                "images": images
+                "images": images,
+                "brand": "brioni"
             }
         )
         if data[1]:
             self.session.commit()
         await asyncio.sleep(random.choice([1.5, 2]))
 
-    async def get_photos(self, article, mfc):
+    @staticmethod
+    async def get_photos(article, mfc):
         photos = {'photos': []}
         photo_ids = []
         async with ClientSession(
@@ -84,25 +83,6 @@ class ParserBrioni:
                 data = await response.json()
                 data = data['hits']
                 self.all_products.extend([item for item in data])
-
-    async def delay_wrapper(self, task):
-        await self.rate_sem.acquire()
-        return await task
-
-    async def releaser(self):
-        while True:
-            await asyncio.sleep(0.5)
-            try:
-                self.rate_sem.release()
-            except ValueError:
-                pass
-
-    async def main(self):
-        await self.get_all_products()
-        rt = asyncio.create_task(self.releaser())
-        await asyncio.gather(
-            *[self.delay_wrapper(self.collect(product)) for product in self.all_products])
-        rt.cancel()
 
     async def collect(self, item):
         article = item['mfc']

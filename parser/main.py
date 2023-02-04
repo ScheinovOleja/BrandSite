@@ -3,8 +3,18 @@ import asyncio
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from parser.handlers.collectors.bottega import ParserBottega
+from parser.handlers.collectors.brioni import ParserBrioni
+from parser.handlers.collectors.brunello import ParserBrunello
+from parser.handlers.collectors.celine import ParserCeline
+from parser.handlers.collectors.chanel import ParserChanel
+from parser.handlers.collectors.dior import ParserDior
 from parser.handlers.collectors.ford import ParserFord
 from parser.handlers.collectors.laurent import ParserLaurent
+from parser.handlers.collectors.loropiana import ParserLoropiana
+from parser.handlers.collectors.louis import ParserLouis
+from parser.handlers.collectors.stefano import ParserStefano
+from parser.handlers.collectors.zilli import ParserZilli
 from parser.models import Base
 
 
@@ -15,39 +25,41 @@ class Parser:
         self.Session = sessionmaker(self.engine)
         with self.Session():
             Base.metadata.create_all(self.engine)
-
-        self.links_zilli = ["https://www.zilli.com/en/3-ready-to-wear", "https://www.zilli.com/en/12-shoes",
-                            "https://www.zilli.com/en/10-accessories"]
+        self.links_zilli = [
+            ("https://www.zilli.com/en/3-ready-to-wear", "Верхняя одежда"),
+            ("https://www.zilli.com/en/12-shoes", "Обувь"),
+            ("https://www.zilli.com/en/10-accessories", "Аксессуары")
+        ]
         self.links_dior = [
             (
                 "https://kpgnq6fji9-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20"
                 "(4.13.1)%3B%20Browser",
-                'bags'),
+                'Сумки'),
             (
                 "https://kpgnq6fji9-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20"
                 "(4.13.1)%3B%20Browser",
-                'belts')
+                'Ремни')
         ]
         self.links_loropiana = [
-            ("https://ua.loropiana.com/ru/c/L1_MEN/results?page={}", "male_ready-to-wear"),
-            ("https://ua.loropiana.com/ru/c/L2_MEN_ACCESSORIES/results?page={}", "male_accessories"),
-            ("https://ua.loropiana.com/ru/c/L2_SHOES_MAN/results?page={}", "male_shoes"),
-            ("https://ua.loropiana.com/ru/c/L1_WOM/results?page={}", "female_ready-to-wear"),
-            ("https://ua.loropiana.com/ru/c/L2_WOM_ACCESSORIES/results?page={}", "female_accessories"),
-            ("https://ua.loropiana.com/ru/c/L2_SHOES_WOM/results?page={}", "female_shoes"),
-            ("https://ua.loropiana.com/ru/c/L2_WOM_LG/results?page={}", "female_leather-goods")
+            ("https://ua.loropiana.com/ru/c/L1_MEN/results?page={}", "Мужская верхняя одежда"),
+            ("https://ua.loropiana.com/ru/c/L2_MEN_ACCESSORIES/results?page={}", "Мужские аксессуары"),
+            ("https://ua.loropiana.com/ru/c/L2_SHOES_MAN/results?page={}", "Мужская обувь"),
+            ("https://ua.loropiana.com/ru/c/L1_WOM/results?page={}", "Женская верхняя одежда"),
+            ("https://ua.loropiana.com/ru/c/L2_WOM_ACCESSORIES/results?page={}", "Женские аксессуары"),
+            ("https://ua.loropiana.com/ru/c/L2_SHOES_WOM/results?page={}", "Женская обувь"),
+            ("https://ua.loropiana.com/ru/c/L2_WOM_LG/results?page={}", "Женские изделия из кожи")
         ]
         self.links_louis = [
             ("https://api.louisvuitton.com/eco-eu/search-merch-eapi/v1/rus-ru/plp/products/tfr7qdp?page={}",
-             'female_bags'),
+             'Женские сумки'),
             ("https://api.louisvuitton.com/eco-eu/search-merch-eapi/v1/rus-ru/plp/products/t164iz3b?page={}",
-             'female_accessories'),
+             'Женские аксессуары'),
             ("https://api.louisvuitton.com/eco-eu/search-merch-eapi/v1/rus-ru/plp/products/ty346sh?page={}",
-             'female_belts'),
+             'Женские ремни'),
             ("https://api.louisvuitton.com/eco-eu/search-merch-eapi/v1/rus-ru/plp/products/t1uezqf4?page={}",
-             'male_bags'),
+             'Мужские сумки'),
             ("https://api.louisvuitton.com/eco-eu/search-merch-eapi/v1/rus-ru/plp/products/t1g9dx5w?page={}",
-             'male_belts'),
+             'Мужские ремни'),
         ]
         self.links_chanel = [
             (
@@ -108,13 +120,29 @@ class Parser:
         ]
         self.links_stefano = [
             (
-                "",
-                ""
+                "4AL",
+                "Мужская верхняя одежда"
             ),
-            (),
-            (),
-            (),
-            (),
+            (
+                "LGN",
+                "Мужские спортивные костюмы"
+            ),
+            (
+                "5ID",
+                "Мужские ремни"
+            ),
+            (
+                "UI7",
+                "Мужские сумки"
+            ),
+            (
+                "6X0",
+                "Мужские изделия из кожи"
+            ),
+            (
+                "SR03",
+                "Мужская обувь"
+            ),
         ]
         self.links_bottega = [
             ("https://www.bottegaveneta.com/on/demandware.store/Sites-BV-R-INTL-Site/en_ZW/Search-UpdateGrid?"
@@ -344,39 +372,39 @@ class Parser:
         ]
 
     async def start_all_parsers(self):
-        # for link_zilli in self.links_zilli:
-        #     task_zilli = ParserZilli(link_zilli, self.Session())
-        #     await task_zilli.main()
-        # for link_dior in self.links_dior:
-        #     task_dior = ParserDior(link_dior, self.Session())
-        #     await task_dior.main()
-        # for link_loropiana in self.links_loropiana:
-        #     task_loropiana = ParserLoropiana(link_loropiana, self.Session())
-        #     await task_loropiana.main()
-        # for link_louis in self.links_louis:
-        #     task_louis = ParserLouis(link_louis, self.Session())
-        #     await task_louis.main()
-        # for link_chanel in self.links_chanel:
-        #     task_dior = ParserChanel(link_chanel, self.Session())
-        #     await task_dior.main()
-        # for link_brunello in self.links_brunello:
-        #     task_brunello = ParserBrunello(link_brunello, self.Session())
-        #     await task_brunello.main()
-        # for link_brioni in self.links_brioni:
-        #     task_brioni = ParserBrioni(link_brioni, self.Session())
-        #     await task_brioni.main()
-        # for link_stefano in self.links_brioni:
-        #     task_stefano = ParserStefano(link_stefano, self.Session())
-        #     await task_stefano.main()
-        # for link_bottega in self.links_bottega:
-        #     task_stefano = ParserBottega(link_bottega, self.Session())
-        #     await task_stefano.main()
-        # for link_celine in self.links_celine:
-        #     task_celine = ParserCeline(link_celine, self.Session())
-        #     await task_celine.main()
-        # for link_laurent in self.links_laurent:
-        #     task_laurent = ParserLaurent(link_laurent, self.Session())
-        #     await task_laurent.main()
+        for link_zilli in self.links_zilli:
+            task_zilli = ParserZilli(link_zilli, self.Session())
+            await task_zilli.main()
+        for link_dior in self.links_dior:
+            task_dior = ParserDior(link_dior, self.Session())
+            await task_dior.main()
+        for link_loropiana in self.links_loropiana:
+            task_loropiana = ParserLoropiana(link_loropiana, self.Session())
+            await task_loropiana.main()
+        for link_louis in self.links_louis:
+            task_louis = ParserLouis(link_louis, self.Session())
+            await task_louis.main()
+        for link_chanel in self.links_chanel:
+            task_dior = ParserChanel(link_chanel, self.Session())
+            await task_dior.main()
+        for link_brunello in self.links_brunello:
+            task_brunello = ParserBrunello(link_brunello, self.Session())
+            await task_brunello.main()
+        for link_brioni in self.links_brioni:
+            task_brioni = ParserBrioni(link_brioni, self.Session())
+            await task_brioni.main()
+        for link_stefano in self.links_stefano:
+            task_stefano = ParserStefano(link_stefano, self.Session())
+            await task_stefano.main()
+        for link_bottega in self.links_bottega:
+            task_stefano = ParserBottega(link_bottega, self.Session())
+            await task_stefano.main()
+        for link_celine in self.links_celine:
+            task_celine = ParserCeline(link_celine, self.Session())
+            await task_celine.main()
+        for link_laurent in self.links_laurent:
+            task_laurent = ParserLaurent(link_laurent, self.Session())
+            await task_laurent.main()
         for link_ford in self.links_ford:
             task_ford = ParserFord(link_ford, self.Session())
             await task_ford.main()

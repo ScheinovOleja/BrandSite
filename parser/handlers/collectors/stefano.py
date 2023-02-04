@@ -5,16 +5,14 @@ import re
 from aiohttp import ClientSession
 from sqlalchemy.orm import Session
 
-from parser.models import get_or_create, StefanoData
+from parser.handlers.general_funcs import BaseParser
+from parser.models import get_or_create, BrandsData
 
 
-class ParserStefano:
+class ParserStefano(BaseParser):
 
     def __init__(self, url, session: Session):
-        self.rate_sem = asyncio.BoundedSemaphore(20)
-        self.url = url[0]
-        self.category = url[1]
-        self.session = session
+        super(ParserStefano, self).__init__(url, session)
         self.cookie = {
             "_iub_cs-60011850": "{\"timestamp\":\"2023-02-03T17:37:24.684Z\",\"version\":\"1.44.8\",\"purposes\":{\"1\":true,\"2\":true,\"3\":true,\"4\":true,\"5\":true},\"id\":\"60011850\",\"cons\":{\"rand\":\"c0a387\"}}",
             "ASP.NET_SessionId": "1gvbibqn0wfioc0yzowkut0j",
@@ -42,12 +40,12 @@ class ParserStefano:
         self.main_body = {
             "ParametroRicerca": {
                 "Nome": "CAT",
-                "Valore": "4AL"
+                "Valore": self.url
             },
             "FiltriAggiuntivi": [
                 {
                     "Nome": "CAT",
-                    "Valore": "4AL"
+                    "Valore": self.url
                 },
                 {
                     "Nome": "DIST_COL",
@@ -56,14 +54,13 @@ class ParserStefano:
             ],
             "DimensionePagina": 1000,
             "PaginaCorrente": 0,
-            "Ordinamento": "CAT_4AL"
+            "Ordinamento": f"CAT_{self.url}"
         }
-        self.all_products = []
 
     async def create_entry(self, article, title, subtitle, color, category, details, images):
         data = get_or_create(
             self.session,
-            StefanoData,
+            BrandsData,
             article=article,
             color=color,
             defaults={
@@ -71,24 +68,13 @@ class ParserStefano:
                 "subtitle": subtitle,
                 "details": details,
                 "category": category,
-                "images": images
+                "images": images,
+                "brand": "stefano"
             }
         )
         if data[1]:
             self.session.commit()
         await asyncio.sleep(random.choice([1.5, 2]))
-
-    async def delay_wrapper(self, task):
-        await self.rate_sem.acquire()
-        return await task
-
-    async def releaser(self):
-        while True:
-            await asyncio.sleep(0.5)
-            try:
-                self.rate_sem.release()
-            except ValueError:
-                pass
 
     async def get_all_products(self):
         async with ClientSession(cookies=self.cookie) as session:
@@ -99,13 +85,6 @@ class ParserStefano:
                         json=self.main_body) as response:
                     data = await response.json()
                     self.all_products.extend(data['Value']['CodiciArticolo'])
-
-    async def main(self):
-        await self.get_all_products()
-        rt = asyncio.create_task(self.releaser())
-        await asyncio.gather(
-            *[self.delay_wrapper(self.collect(product)) for product in self.all_products])
-        rt.cancel()
 
     async def collect(self, sku):
         async with ClientSession(cookies=self.cookie) as session:
@@ -119,7 +98,10 @@ class ParserStefano:
                     if color_item['Nome']:
                         color = color_item['Descrizione']
                         break
-                details = re.search(r"<ul>[\s\S]*</ul>", data['Value']['Scheda']).group(0)
+                try:
+                    details = re.search(r"<ul>[\s\S]*</ul>", data['Value']['Scheda']).group(0)
+                except AttributeError:
+                    details = '--'
                 images = {'photos': []}
                 images['photos'].extend([image['ImmagineHD'] for image in data['Value']['Immagini']])
                 await self.create_entry(article, title, subtitle, color, self.category, details, images)

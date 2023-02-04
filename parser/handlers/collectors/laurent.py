@@ -6,22 +6,20 @@ from aiohttp import ClientSession
 from bs4 import BeautifulSoup
 from sqlalchemy.orm import Session
 
-from parser.models import get_or_create, LaurentData
+from parser.handlers.general_funcs import BaseParser
+from parser.models import get_or_create, BrandsData
 
 
-class ParserLaurent:
+class ParserLaurent(BaseParser):
 
     def __init__(self, url, session: Session):
+        super(ParserLaurent, self).__init__(url, session)
         self.rate_sem = asyncio.BoundedSemaphore(50)
-        self.url = url[0]
-        self.category = url[1]
-        self.session = session
-        self.all_products = []
 
     async def create_entry(self, article, title, subtitle, color, category, details, images):
         data = get_or_create(
             self.session,
-            LaurentData,
+            BrandsData,
             article=article,
             title=title,
             defaults={
@@ -29,7 +27,8 @@ class ParserLaurent:
                 "details": details,
                 "color": color,
                 "category": category,
-                "images": images
+                "images": images,
+                "brand": "laurent"
             }
         )
         if data[1]:
@@ -43,18 +42,6 @@ class ParserLaurent:
         all_product = soup.find_all('a', class_="c-product__link")
         self.all_products.extend(
             [(f"https://www.ysl.com{link.get('href')}", link.parent.get('id')) for link in all_product])
-
-    async def delay_wrapper(self, task):
-        await self.rate_sem.acquire()
-        return await task
-
-    async def releaser(self):
-        while True:
-            await asyncio.sleep(0.5)
-            try:
-                self.rate_sem.release()
-            except ValueError:
-                pass
 
     async def main(self):
         await self.get_all_products()
