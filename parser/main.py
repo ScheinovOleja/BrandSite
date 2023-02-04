@@ -3,7 +3,7 @@ import asyncio
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from parser.handlers.collectors.celine import ParserCeline
+from parser.handlers.collectors.ford import ParserFord
 from parser.handlers.collectors.laurent import ParserLaurent
 from parser.models import Base
 
@@ -331,6 +331,17 @@ class Parser:
             ),
 
         ]
+        self.links_ford = [
+            (
+                "https://www.tomford.com/women/handbags/?start={start}&sz={size}", "Женские сумки"
+            ),
+            (
+                "https://www.tomford.com/women/shoes/?start=0&sz=10000&format=page-element", "Женская обувь"
+            ),
+            (
+                "https://www.tomford.com/women/accessories/?start=0&sz=10000&format=page-element", "Женские аксессуары"
+            )
+        ]
 
     async def start_all_parsers(self):
         # for link_zilli in self.links_zilli:
@@ -363,9 +374,12 @@ class Parser:
         # for link_celine in self.links_celine:
         #     task_celine = ParserCeline(link_celine, self.Session())
         #     await task_celine.main()
-        for link_laurent in self.links_laurent:
-            task_laurent = ParserLaurent(link_laurent, self.Session())
-            await task_laurent.main()
+        # for link_laurent in self.links_laurent:
+        #     task_laurent = ParserLaurent(link_laurent, self.Session())
+        #     await task_laurent.main()
+        for link_ford in self.links_ford:
+            task_ford = ParserFord(link_ford, self.Session())
+            await task_ford.main()
 
 
 if __name__ == '__main__':

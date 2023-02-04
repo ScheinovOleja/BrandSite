@@ -100,3 +100,9 @@ class LaurentData(BaseModel):
     __tablename__ = 'laurent_data'
 
     details = Column(String(1024))
+
+
+class FordData(BaseModel):
+    __tablename__ = 'ford_data'
+
+    details = Column(String(1024))
