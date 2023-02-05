@@ -1,4 +1,4 @@
-from app import db
+from server import db
 
 
 class BrandsData(db.Model):
@@ -15,3 +15,10 @@ class BrandsData(db.Model):
     description = db.Column(db.String(1024), nullable=True, default='')
     brand = db.Column(db.String(32))
     images = db.Column(db.JSON)
+
+
+class AllBrands(db.Model):
+    __tablename__ = "all_brands"
+    id = db.Column(db.Integer, nullable=False, unique=True, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(32))
+    short_name = db.Column(db.String(32))
