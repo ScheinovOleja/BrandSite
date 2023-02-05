@@ -4,19 +4,19 @@ import threading
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from parser.handlers.collectors.bottega import ParserBottega
-from parser.handlers.collectors.brioni import ParserBrioni
-from parser.handlers.collectors.brunello import ParserBrunello
-from parser.handlers.collectors.celine import ParserCeline
-from parser.handlers.collectors.chanel import ParserChanel
-from parser.handlers.collectors.dior import ParserDior
-from parser.handlers.collectors.ford import ParserFord
-from parser.handlers.collectors.laurent import ParserLaurent
-from parser.handlers.collectors.loropiana import ParserLoropiana
-from parser.handlers.collectors.louis import ParserLouis
-from parser.handlers.collectors.stefano import ParserStefano
-from parser.handlers.collectors.zilli import ParserZilli
-from parser.models import Base
+from handlers.collectors.bottega import ParserBottega
+from handlers.collectors.brioni import ParserBrioni
+from handlers.collectors.brunello import ParserBrunello
+from handlers.collectors.celine import ParserCeline
+from handlers.collectors.chanel import ParserChanel
+from handlers.collectors.dior import ParserDior
+from handlers.collectors.ford import ParserFord
+from handlers.collectors.laurent import ParserLaurent
+from handlers.collectors.loropiana import ParserLoropiana
+from handlers.collectors.louis import ParserLouis
+from handlers.collectors.stefano import ParserStefano
+from handlers.collectors.zilli import ParserZilli
+from models import Base
 
 
 class Parser:

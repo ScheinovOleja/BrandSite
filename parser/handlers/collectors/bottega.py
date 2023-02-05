@@ -5,8 +5,8 @@ import re
 from aiohttp import ClientSession
 from bs4 import BeautifulSoup
 
-from parser.handlers.general_funcs import BaseParser
-from parser.models import BrandsData, get_or_create
+from handlers.general_funcs import BaseParser
+from models import BrandsData, get_or_create
 
 
 class ParserBottega(BaseParser):

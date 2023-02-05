@@ -6,8 +6,8 @@ from aiohttp import ClientSession
 from bs4 import BeautifulSoup
 from sqlalchemy.orm import Session
 
-from parser.handlers.general_funcs import BaseParser
-from parser.models import get_or_create, BrandsData
+from handlers.general_funcs import BaseParser
+from models import get_or_create, BrandsData
 
 
 class ParserChanel(BaseParser):

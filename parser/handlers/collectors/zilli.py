@@ -5,8 +5,8 @@ from aiohttp import ClientSession, TCPConnector
 from bs4 import BeautifulSoup, Tag, NavigableString
 from sqlalchemy.orm import Session
 
-from parser.handlers.general_funcs import BaseParser
-from parser.models import BrandsData, get_or_create
+from handlers.general_funcs import BaseParser
+from models import BrandsData, get_or_create
 
 
 class ParserZilli(BaseParser):
