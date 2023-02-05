@@ -3,7 +3,6 @@ from flask import Blueprint, render_template
 from sqlalchemy import select
 
 from brand_site import db
-from brand_site.server.funcs import get_photo_b64
 from brand_site.utils.db.models import BrandsData
 from parser.models import AllBrands
 
