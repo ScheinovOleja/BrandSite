@@ -386,41 +386,47 @@ class Parser:
             task_zilli = ParserZilli(link_zilli, self.Session())
             task = threading.Thread(target=asyncio.run, args=(task_zilli.main(),))
             self.all_tasks.append(task)
+            await self.start_and_join()
         for link_dior in self.links_dior:
             task_dior = ParserDior(link_dior, self.Session())
             task = threading.Thread(target=asyncio.run, args=(task_dior.main(),))
             self.all_tasks.append(task)
+            await self.start_and_join()
         for link_loropiana in self.links_loropiana:
             task_loropiana = ParserLoropiana(link_loropiana, self.Session())
             task = threading.Thread(target=asyncio.run, args=(task_loropiana.main(),))
             self.all_tasks.append(task)
-        await self.start_and_join()
+            await self.start_and_join()
         for link_louis in self.links_louis:
             task_louis = ParserLouis(link_louis, self.Session())
             task = threading.Thread(target=asyncio.run, args=(task_louis.main(),))
             self.all_tasks.append(task)
+            await self.start_and_join()
         for link_chanel in self.links_chanel:
             task_chanel = ParserChanel(link_chanel, self.Session())
             task = threading.Thread(target=asyncio.run, args=(task_chanel.main(),))
             self.all_tasks.append(task)
+            await self.start_and_join()
         for link_brunello in self.links_brunello:
             task_brunello = ParserBrunello(link_brunello, self.Session())
             task = threading.Thread(target=asyncio.run, args=(task_brunello.main(),))
             self.all_tasks.append(task)
-        await self.start_and_join()
+            await self.start_and_join()
         for link_brioni in self.links_brioni:
             task_brioni = ParserBrioni(link_brioni, self.Session())
             task = threading.Thread(target=asyncio.run, args=(task_brioni.main(),))
             self.all_tasks.append(task)
+            await self.start_and_join()
         for link_stefano in self.links_stefano:
             task_stefano = ParserStefano(link_stefano, self.Session())
             task = threading.Thread(target=asyncio.run, args=(task_stefano.main(),))
             self.all_tasks.append(task)
+            await self.start_and_join()
         for link_bottega in self.links_bottega:
             task_stefano = ParserBottega(link_bottega, self.Session())
             task = threading.Thread(target=asyncio.run, args=(task_stefano.main(),))
             self.all_tasks.append(task)
-        await self.start_and_join()
+            await self.start_and_join()
         for link_celine in self.links_celine:
             task_celine = ParserCeline(link_celine, self.Session())
             task = threading.Thread(target=asyncio.run, args=(task_celine.main(),))
@@ -430,6 +436,7 @@ class Parser:
             task_laurent = ParserLaurent(link_laurent, self.Session())
             task = threading.Thread(target=asyncio.run, args=(task_laurent.main(),))
             self.all_tasks.append(task)
+            await self.start_and_join()
         for link_ford in self.links_ford:
             task_ford = ParserFord(link_ford, self.Session())
             task = threading.Thread(target=asyncio.run, args=(task_ford.main(),))
