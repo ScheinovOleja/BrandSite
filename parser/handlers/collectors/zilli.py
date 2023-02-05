@@ -117,8 +117,9 @@ class ParserZilli(BaseParser):
             more_detail = await self.get_more_detail(soup)
             materials = await self.get_materials(soup)
             article = await self.get_article(soup)
-            photos_links = {'photos': [link.attrs['src'] for link in soup.find_all('img', {'itemprop': "image"})]}
-            await self.create_entry(article, title, subtitle, more_detail, materials, photos_links)
+            images = {
+                'photos': [link.attrs['src'] for link in soup.find_all('img', {'itemprop': "image"})]}
+            await self.create_entry(article, title, subtitle, more_detail, materials, images)
         except BaseException as e:
             print(f"Критическая ошибка -- пропуск ссылки -- сайт {self.url} - {e}")
             return

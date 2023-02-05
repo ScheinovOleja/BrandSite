@@ -98,9 +98,8 @@ class ParserChanel(BaseParser):
                     size = soup.find("span", class_="js-dimension").text
             except BaseException:
                 return
-            images = {"photo": []}
             try:
-                images['photo'].extend([image['url'] for image in item_data['basic']['images']])
+                images = {'photo': [image['url'] for image in item_data['basic']['images']]}
             except KeyError:
                 return
             await self.create_entry(article, title, subtitle, color, self.category, size, images)

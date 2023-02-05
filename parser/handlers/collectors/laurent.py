@@ -59,6 +59,5 @@ class ParserLaurent(BaseParser):
         details = re.sub(" +", " ", soup.find('ul', class_="c-product__detailslist").text.replace('\n\n', ''))
         color = re.sub(" +", " ", soup.find('p', class_="c-product__colorvalue").text)
         all_image = soup.find_all('img', class_="c-product__image")
-        images = {'photos': []}
-        images['photos'].extend([image.get('src') for image in all_image])
+        images = {'photos': [image.get('src') for image in all_image]}
         await self.create_entry(article, title, subtitle, color, self.category, details, images)

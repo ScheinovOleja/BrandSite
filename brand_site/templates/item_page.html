@@ -1,32 +1,51 @@
 {% extends "base.html" %}
 {% block content %}
-<h1 class="title_h1">{{ site }}</h1>
-<div class="content">
-    {% for i in range(count_records) %}
-        <div class="top_content">
-            <div class="left_panel">
-                <ul class="image_grid">
-                    {% for photo in data['images'][i] %}
-                        <li class="image"><img src="data:image/webp;base64,{{ photo | safe }}" alt="" width=""></li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="right_panel" style="width: 34%">
-                <div class="title_subtitle-container">
-                    <h1>
-                        <span class="title">{{ data['title'][i] }}</span>
-                        <span class="subtitle">{{ data['subtitle'][i] }}</span>
-                    </h1>
-                    <p class="ref">Артикул: {{ data['article'][i] }}</p>
+    <h1 class="title_h1">{{ data['category'][0] }}</h1>
+    <div class="content">
+        {% for i in range(count_records) %}
+            <div class="top_content">
+                <div class="left_panel">
+                    <ul class="image_grid">
+                        {% for photo in data['images'][i]['photos'] %}
+                            <li class="image">
+                                <div class="image-media">
+                                    <div class="image-div">
+                                        <img src="{{ photo | safe }}" alt="" width="">
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
                 </div>
-                <div class="more_details_and_materials-container">
-                    <p class="size">Больше деталей: <br>
-                        {{ data['more_details'][i] | safe }}</p>
-                    <p class="size">Материалы: <br>
-                        {{ data['materials'][i] | safe }}</p>
+                <div class="right_panel">
+                    <div class="title_subtitle-container">
+                        <h1>
+                            <span class="title">{{ data['title'][i] }}</span>
+                            <span class="subtitle">{{ data['category'][i] }}</span>
+                        </h1>
+                        <p class="ref">Артикул: {{ data['article'][i] }}</p>
+                    </div>
+                    <div class="more_details_and_materials-container">
+                        {% if data['details'][i] %}
+                            <p class="size">
+                                {{ data['details'][i] | replace_n | safe }}
+                            </p>
+                        {% endif %}
+                        {% if data['materials'][i] %}
+                            <p class="size"><br>
+                                {{ data['materials'][i] | replace_n | safe }}</p>
+                        {% endif %}
+                        {% if data['description'][i] %}
+                            <p class="size"><br>
+                                {{ data['description'][i] | replace_n | safe }}</p>
+                        {% endif %}
+                        {% if data['size_and_fit'][i] %}
+                            <p class="size"><br>
+                                {{ data['size_and_fit'][i] | replace_n | safe }}</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-        </div>
-    {% endfor %}
-</div>
+        {% endfor %}
+    </div>
 {% endblock %}

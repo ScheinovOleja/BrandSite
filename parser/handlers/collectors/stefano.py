@@ -102,6 +102,5 @@ class ParserStefano(BaseParser):
                     details = re.search(r"<ul>[\s\S]*</ul>", data['Value']['Scheda']).group(0)
                 except AttributeError:
                     details = '--'
-                images = {'photos': []}
-                images['photos'].extend([image['ImmagineHD'] for image in data['Value']['Immagini']])
+                images = {"photos": [image['ImmagineHD'] for image in data['Value']['Immagini']]}
                 await self.create_entry(article, title, subtitle, color, self.category, details, images)

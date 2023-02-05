@@ -52,8 +52,7 @@ class ParserBrunello(BaseParser):
                 subtitle = item['materials']
                 color = item['mainColor']
                 details = item['details']
-                images = {'photos': []}
-                images['photos'].extend([image['absURL'] for image in item['images']['large']])
+                images = {'photos': [image['absURL'] for image in item['images']['large']]}
                 await self.create_entry(article, title, subtitle, color, self.category, details, images)
 
     async def collect(self, article):
@@ -65,6 +64,6 @@ class ParserBrunello(BaseParser):
                 data = data['product']
             if len(data['variationAttributes'][0]['values']) > 1:
                 for item in data['variationAttributes'][0]['values']:
-                    await self.collect_variant(data['id']+item['id'])
+                    await self.collect_variant(data['id'] + item['id'])
             else:
                 await self.collect_variant(data['sku'])

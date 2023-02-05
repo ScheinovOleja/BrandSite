@@ -39,7 +39,8 @@ class ParserBottega(BaseParser):
             async with session.get(self.url) as response:
                 soup = BeautifulSoup(await response.text(), 'lxml')
         all_products = soup.find_all('a', class_='c-product__link')
-        self.all_products.extend([(f"https://www.bottegaveneta.com{link.get('href')}", link.get('data-pid')) for link in all_products])
+        self.all_products.extend(
+            [(f"https://www.bottegaveneta.com{link.get('href')}", link.get('data-pid')) for link in all_products])
 
     async def main(self):
         await self.get_all_products()
@@ -57,6 +58,5 @@ class ParserBottega(BaseParser):
         color = " ".join(soup.find('span', class_="l-pdp__colorname").text.replace('\n\n', '').split())
         details = re.sub(" +", " ", soup.find('div', class_="l-pdp__description").text.replace('\n\n', ''))
         all_image = soup.find_all("img", class_="c-product__image")
-        images = {'photos': []}
-        images['photos'].extend([image.get('src') for image in all_image])
+        images = {'photos': [image.get('src') for image in all_image]}
         await self.create_entry(article, title, subtitle, color, self.category, details, images)

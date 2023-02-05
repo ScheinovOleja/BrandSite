@@ -60,7 +60,6 @@ class ParserDior(BaseParser):
         }
 
     async def get_photos(self, url, code):
-        photos = []
         async with ClientSession(connector=TCPConnector(verify_ssl=False)) as session:
             async with session.get(self.dior_url + url) as response:
                 extra_soup = BeautifulSoup(await response.text('utf-8'), "lxml")
@@ -69,9 +68,9 @@ class ParserDior(BaseParser):
                     async with session.get(self.dior_url + f"/{code}") as response:
                         extra_soup = BeautifulSoup(await response.text('utf-8'), "lxml")
                         photos_raw = extra_soup.find_all('img', alt=re.compile('aria_openGallery'))
-                photos.append([link.attrs['src'] for link in photos_raw])
+                images = {"photos": [link.attrs['src'] for link in photos_raw]}
         await asyncio.sleep(0.5)
-        return photos[0]
+        return images
 
     async def create_entry(self, article, title, subtitle, size_and_fit, colours, photos_links):
         data = get_or_create(
@@ -117,11 +116,8 @@ class ParserDior(BaseParser):
             except AttributeError:
                 size_and_fit = '--'
             colours = product['color']['group']
-            photos = await self.get_photos(product['url'], product['code'])
-            photos = {'photos': photos}
-            if not photos:
-                raise BaseException
-            await self.create_entry(article, title, subtitle, size_and_fit, colours, photos)
+            images = await self.get_photos(product['url'], product['code'])
+            await self.create_entry(article, title, subtitle, size_and_fit, colours, images)
         except BaseException as e:
             print(f"Критическая ошибка -- пропуск ссылки -- сайт {self.url} \n {e}")
             return

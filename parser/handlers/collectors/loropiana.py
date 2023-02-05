@@ -63,18 +63,18 @@ class ParserLoropiana(BaseParser):
                     item_detail = item_detail[0]
                 except IndexError:
                     return
-        await asyncio.sleep(random.choice([1.5, 2]))
-        article = item['code']
-        title = item['name']
-        subtitle = item['eshopMaterialCode']
-        color = item_detail['description']
-        async with session.get(f"https://ua.loropiana.com/ru{item['url']}") as response:
-            soup = BeautifulSoup(await response.text(), 'lxml')
             await asyncio.sleep(random.choice([1.5, 2]))
-        details = soup.select_one('div#productDetail > div.content > p.t-product-copy').text.replace(
-            'Product sheet for environmental qualities or characteristics', '')
-        images = {'photo': []}
-        for image_item in item_detail['imagesContainers']:
-            images["photo"].extend([image['url'] for image in image_item['formats'] if
-                                    image_item['code'] != 'B1' and image['format'] == 'LARGE'])
-        await self.create_entry(article, title, subtitle, color, self.category, details, images)
+            article = item['code']
+            title = item['name']
+            subtitle = item['eshopMaterialCode']
+            color = item_detail['description']
+            async with session.get(f"https://ua.loropiana.com/ru{item['url']}") as response:
+                soup = BeautifulSoup(await response.text(), 'lxml')
+                await asyncio.sleep(random.choice([1.5, 2]))
+            details = soup.select_one('div#productDetail > div.content > p.t-product-copy').text.replace(
+                'Product sheet for environmental qualities or characteristics', '')
+            images = {"photos": []}
+            for image_item in item_detail['imagesContainers']:
+                images["photos"].extend([image['url'] for image in image_item['formats'] if
+                                         image_item['code'] != 'B1' and image['format'] == 'LARGE'])
+            await self.create_entry(article, title, subtitle, color, self.category, details, images)

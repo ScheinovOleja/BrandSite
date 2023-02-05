@@ -399,10 +399,10 @@ class Parser:
         #     task_louis = ParserLouis(link_louis, self.Session())
         #     task = threading.Thread(target=asyncio.run, args=(task_louis.main(),))
         #     self.all_tasks.append(task)
-        for link_chanel in self.links_chanel:
-            task_chanel = ParserChanel(link_chanel, self.Session())
-            task = threading.Thread(target=asyncio.run, args=(task_chanel.main(),))
-            self.all_tasks.append(task)
+        # for link_chanel in self.links_chanel:
+        #     task_chanel = ParserChanel(link_chanel, self.Session())
+        #     task = threading.Thread(target=asyncio.run, args=(task_chanel.main(),))
+        #     self.all_tasks.append(task)
         # for link_brunello in self.links_brunello:
         #     task_brunello = ParserBrunello(link_brunello, self.Session())
         #     task = threading.Thread(target=asyncio.run, args=(task_brunello.main(),))
@@ -421,10 +421,11 @@ class Parser:
         #     task = threading.Thread(target=asyncio.run, args=(task_stefano.main(),))
         #     self.all_tasks.append(task)
         # await self.start_and_join()
-        # for link_celine in self.links_celine:
-        #     task_celine = ParserCeline(link_celine, self.Session())
-        #     task = threading.Thread(target=asyncio.run, args=(task_celine.main(),))
-        #     self.all_tasks.append(task)
+        for link_celine in self.links_celine:
+            task_celine = ParserCeline(link_celine, self.Session())
+            task = threading.Thread(target=asyncio.run, args=(task_celine.main(),))
+            task.start()
+            task.join()
         # for link_laurent in self.links_laurent:
         #     task_laurent = ParserLaurent(link_laurent, self.Session())
         #     task = threading.Thread(target=asyncio.run, args=(task_laurent.main(),))
@@ -433,7 +434,7 @@ class Parser:
         #     task_ford = ParserFord(link_ford, self.Session())
         #     task = threading.Thread(target=asyncio.run, args=(task_ford.main(),))
         #     self.all_tasks.append(task)
-        await self.start_and_join()
+        #     await self.start_and_join()
 
 
 if __name__ == '__main__':

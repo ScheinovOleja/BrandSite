@@ -46,10 +46,9 @@ class ParserBrioni(BaseParser):
             self.session.commit()
         await asyncio.sleep(random.choice([1.5, 2]))
 
-    @staticmethod
-    async def get_photos(article, mfc):
-        photos = {'photos': []}
+    async def get_photos(self, article, mfc):
         photo_ids = []
+        images = {'photos': []}
         async with ClientSession(
                 headers={"Authorization": "Bearer vWpzVvwL58z3mWIdoxBvXti9q5zrD793BctKe-5Qx3o"}) as session:
             async with session.get(
@@ -69,11 +68,11 @@ class ParserBrioni(BaseParser):
                         if "image" in entry['fields'].keys():
                             photo_ids.append(entry['fields']['title'])
                 for asset in data_assets:
-                    photos['photos'].extend(
-                        [f"https:{asset['fields']['file']['url']}" for photo_id in photo_ids if
-                         asset['fields']['title'].replace('.jpg', '') == photo_id and mfc in photo_id])
+                    images['photos'].extend([f"https:{asset['fields']['file']['url']}" for photo_id in photo_ids if
+                                             asset['fields']['title'].replace('.jpg',
+                                                                              '') == photo_id and mfc in photo_id])
         await asyncio.sleep(0.5)
-        return photos, materials
+        return images, materials
 
     async def get_all_products(self):
         async with ClientSession(headers=self.headers) as session:

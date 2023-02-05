@@ -1,17 +1,16 @@
-.box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: auto;
-}
-
-.box div {
-    width: auto;
-    height: 50px;
-}
-
 .title_h1 {
     text-align: center;
+}
+
+a:active, /* активная/посещенная ссылка */
+a {
+    text-decoration: none;
+    color: black;
+}
+
+a:hover {
+    color: #3F57D2;
+    transition: .5s;
 }
 
 li {
@@ -28,9 +27,7 @@ img {
 }
 
 .top_content {
-    display: -webkit-box;
     display: flex;
-    display: -webkit-flex;
     margin-bottom: 10rem;
 }
 
@@ -46,11 +43,8 @@ img {
 
 .image_grid {
     display: flex;
-    display: -webkit-flex;
     justify-content: space-between;
-    -webkit-justify-content: space-between;
     flex-wrap: wrap;
-    -webkit-flex-wrap: wrap;
     margin: -.625rem;
 }
 
@@ -67,7 +61,6 @@ img {
     width: 50%;
     padding: 0 .625rem .625rem;
     box-sizing: border-box;
-    -webkit-box-sizing: border-box;
 }
 
 .image-div {
@@ -105,4 +98,17 @@ img {
     margin-top: .4375rem;
     font-size: .8125rem;
     line-height: 1.3125rem;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 300px;
+    align-content: center;
+    margin: auto auto;
+}
+
+.box div {
+    line-height: 30px;
 }

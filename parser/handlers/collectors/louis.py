@@ -77,9 +77,8 @@ class ParserLouis(BaseParser):
                     description = re.sub(r"\n\n", '', description)
                 except BaseException:
                     description = '--'
-                images = {'photo': []}
-                images['photo'].extend(
-                    [image['contentUrl'].format(IMG_WIDTH=1280, IMG_HEIGHT=720) for image in model['image']])
+                images = {'photos':
+                              [image['contentUrl'].format(IMG_WIDTH=1280, IMG_HEIGHT=720) for image in model['image']]}
                 await self.create_entry(article, title, subtitle, color, self.category, description, images)
         except KeyError:
             return

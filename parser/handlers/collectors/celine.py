@@ -2,7 +2,7 @@ import asyncio
 import random
 
 from aiohttp import ClientSession
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from sqlalchemy.orm import Session
 
 from parser.handlers.general_funcs import BaseParser
@@ -39,7 +39,8 @@ class ParserCeline(BaseParser):
             async with session.get(self.url) as response:
                 soup = BeautifulSoup(await response.text(), 'lxml')
         all_product = soup.select("li.o-listing-grid__item > div > a")
-        self.all_products.extend([(f"https://www.celine.com{item.get('href')}", item.parent.get('data-id')) for item in all_product])
+        self.all_products.extend(
+            [(f"https://www.celine.com{item.get('href')}", item.parent.get('data-id')) for item in all_product])
 
     async def main(self):
         await self.get_all_products()
@@ -49,15 +50,28 @@ class ParserCeline(BaseParser):
         rt.cancel()
 
     async def collect(self, url, article):
+        ok = False
         async with ClientSession() as session:
-            async with session.get(url) as response:
-                soup = BeautifulSoup(await response.text(), 'lxml')
+            while not ok:
+                async with session.get(url) as response:
+                    soup = BeautifulSoup(await response.text(), 'lxml')
+                    ok = response.ok
+                    print(ok)
         title = soup.find('span', class_="o-product__title-truncate").text
         subtitle = '--'
         color = soup.find('span', class_="o-product__title-color").text
-        details = soup.find('div', class_="o-product__description").text
+        try:
+            details = "\n".join(
+                [item.text for item in soup.select_one("div.o-product__description > div > p").contents if
+                 not isinstance(item, Tag)])
+        except AttributeError as e:
+            details = "\n".join(
+                [item.text for item in soup.select_one(
+                    "div.a-list:nth-child(2) > div > p").contents if
+                 not isinstance(item, Tag)])
+            print(url)
         all_images = soup.select('li.m-thumb-carousel__item > button > img')
-        images = {'photos': []}
-        images['photos'].extend(
-            [image.get('src').split('?')[0] if image.get('src') else image.parent.get('data-pswp-src') for image in all_images])
+        images = {
+            'photos': [image.get('src').split('?')[0] if image.get('src') else image.parent.get('data-pswp-src') for
+                       image in all_images]}
         await self.create_entry(article, title, subtitle, color, self.category, details, images)
