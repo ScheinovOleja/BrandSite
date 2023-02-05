@@ -9,7 +9,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://oleg:oleg2000@localhost/parser_brands'
     db.init_app(app)
 
-    from server.routes import app as server_app
+    from .routes import app as server_app
     app.register_blueprint(server_app)
 
     with app.app_context():

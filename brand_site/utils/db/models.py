@@ -1,4 +1,4 @@
-from brand_site import db
+from brand_site.server import db
 
 
 class BrandsData(db.Model):

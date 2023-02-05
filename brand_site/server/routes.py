@@ -2,7 +2,7 @@ import pandas as pd
 from flask import Blueprint, render_template
 from sqlalchemy import select
 
-from brand_site import db
+from brand_site.server import db
 from brand_site.utils.db.models import BrandsData
 from parser.models import AllBrands
 
