@@ -1,0 +1,52 @@
+{
+  "values": [
+    {
+      "name": "Zilli",
+      "short_name": "zilli"
+    },
+    {
+      "name": "Loro Piana",
+      "short_name": "loropiana"
+    },
+    {
+      "name": "Dior",
+      "short_name": "dior"
+    },
+    {
+      "name": "Louis Vuitton",
+      "short_name": "louis"
+    },
+    {
+      "name": "Chanel",
+      "short_name": "chanel"
+    },
+    {
+      "name": "Brunello Cucinelli",
+      "short_name": "brunello"
+    },
+    {
+      "name": "Brioni",
+      "short_name": "brioni"
+    },
+    {
+      "name": "Stefano Ricci",
+      "short_name": "stefano"
+    },
+    {
+      "name": "Bottega Veneta",
+      "short_name": "bottega"
+    },
+    {
+      "name": "Celine",
+      "short_name": "celine"
+    },
+    {
+      "name": "Saint Laurent",
+      "short_name": "laurent"
+    },
+    {
+      "name": "Tom Ford",
+      "short_name": "ford"
+    }
+  ]
+}
