@@ -82,7 +82,7 @@ class ParserDior(BaseParser):
             defaults={
                 "subtitle": subtitle,
                 "size_and_fit": size_and_fit,
-                "colors": colours,
+                "color": colours,
                 "category": self.category,
                 "images": photos_links,
                 "brand": "dior"
@@ -118,7 +118,7 @@ class ParserDior(BaseParser):
                 size_and_fit = '--'
             colours = product['color']['group']
             photos = await self.get_photos(product['url'], product['code'])
-            photos = json.dumps({'photos': photos})
+            photos = {'photos': photos}
             if not photos:
                 raise BaseException
             await self.create_entry(article, title, subtitle, size_and_fit, colours, photos)

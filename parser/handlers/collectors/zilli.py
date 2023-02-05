@@ -1,5 +1,4 @@
 import asyncio
-import json
 import re
 
 from aiohttp import ClientSession, TCPConnector
@@ -118,8 +117,7 @@ class ParserZilli(BaseParser):
             more_detail = await self.get_more_detail(soup)
             materials = await self.get_materials(soup)
             article = await self.get_article(soup)
-            photos_links = json.dumps(
-                {'photos': [link.attrs['src'] for link in soup.find_all('img', {'itemprop': "image"})]})
+            photos_links = {'photos': [link.attrs['src'] for link in soup.find_all('img', {'itemprop': "image"})]}
             await self.create_entry(article, title, subtitle, more_detail, materials, photos_links)
         except BaseException as e:
             print(f"Критическая ошибка -- пропуск ссылки -- сайт {self.url} - {e}")

@@ -64,6 +64,7 @@ class ParserLouis(BaseParser):
             async with session.get(
                     f"https://api.louisvuitton.com/api/rus-ru/catalog/product/{item['productId']}") as response:
                 total_data = await response.json()
+        try:
             for model in total_data['model']:
                 article = f"{item['productId']}-{item['identifier']}"
                 title = item['name']
@@ -80,3 +81,5 @@ class ParserLouis(BaseParser):
                 images['photo'].extend(
                     [image['contentUrl'].format(IMG_WIDTH=1280, IMG_HEIGHT=720) for image in model['image']])
                 await self.create_entry(article, title, subtitle, color, self.category, description, images)
+        except KeyError:
+            return

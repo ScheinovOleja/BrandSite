@@ -12,7 +12,7 @@ from parser.models import get_or_create, BrandsData
 class ParserCeline(BaseParser):
 
     def __init__(self, url, session: Session):
-        self.rate_sem = asyncio.BoundedSemaphore(50)
+        self.rate_sem = asyncio.BoundedSemaphore(1)
         super(ParserCeline, self).__init__(url, session)
 
     async def create_entry(self, article, title, subtitle, color, category, details, images):

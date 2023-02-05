@@ -5,17 +5,15 @@ import re
 from aiohttp import ClientSession
 from bs4 import BeautifulSoup
 
+from parser.handlers.general_funcs import BaseParser
 from parser.models import BrandsData, get_or_create
 
 
-class ParserBottega:
+class ParserBottega(BaseParser):
 
     def __init__(self, url, session):
-        self.rate_sem = asyncio.BoundedSemaphore(500)
-        self.url = url[0]
-        self.category = url[1]
-        self.session = session
-        self.all_products = []
+        super(ParserBottega, self).__init__(url, session)
+        self.rate_sem = asyncio.BoundedSemaphore(100)
 
     async def create_entry(self, article, title, subtitle, color, category, details, images):
         data = get_or_create(
@@ -35,18 +33,6 @@ class ParserBottega:
         if data[1]:
             self.session.commit()
         await asyncio.sleep(random.choice([1.5, 2]))
-
-    async def delay_wrapper(self, task):
-        await self.rate_sem.acquire()
-        return await task
-
-    async def releaser(self):
-        while True:
-            await asyncio.sleep(0.5)
-            try:
-                self.rate_sem.release()
-            except ValueError:
-                pass
 
     async def get_all_products(self):
         async with ClientSession() as session:
