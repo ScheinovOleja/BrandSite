@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1 class="title_h1">{{ data['category'][0] }}</h1>
+    <div class="content">
+        <div class="item-list">
+            {% for i in range(count_records) %}
+                <a href="{{ url_for('server_app.item_detail', brand=data['brand'][i], category=data['category'][i], article=data['article'][i]) }}">
+                    <div class="item_container">
+                        <div class="item-img">
+                            <img src="{{ data['images'][i]['photos'][0] | safe }}" alt="">
+                        </div>
+                    </div>
+                    <div class="item-detail">
+                        <div class="item-title">{{ data['title'][i] }}</div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+{% block footer %}
+    <footer class="back_button">
+        <a href="{{ url_for('server_app.choice_category', brand=brand) }}">Назад</a>
+    </footer>
+{% endblock %}

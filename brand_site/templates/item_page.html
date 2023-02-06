@@ -21,7 +21,11 @@
                     <div class="title_subtitle-container">
                         <h1>
                             <span class="title">{{ data['title'][i] }}</span>
-                            <span class="subtitle">{{ data['category'][i] }}</span>
+                            {% if data['subtitle'][i] %}
+                                <span class="subtitle">{{ data['subtitle'][i] }}</span>
+                            {% else %}
+                                <span class="subtitle">{{ data['category'][i] }}</span>
+                            {% endif %}
                         </h1>
                         <p class="ref">Артикул: {{ data['article'][i] }}</p>
                     </div>
@@ -48,4 +52,9 @@
             </div>
         {% endfor %}
     </div>
+{% endblock %}
+{% block footer %}
+    <footer class="back_button">
+        <a href="{{ url_for('server_app.choice_item', brand=brand, category=category) }}">Назад</a>
+    </footer>
 {% endblock %}

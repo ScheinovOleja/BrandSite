@@ -1,8 +1,7 @@
 import pandas as pd
 from flask import Blueprint, render_template
-from sqlalchemy import select
-
 from server import db
+from sqlalchemy import select
 from utils.db.models import AllBrands, BrandsData
 
 app = Blueprint('server_app', __name__)
@@ -32,4 +31,14 @@ async def choice_item(brand, category):
         data = pd.read_sql_query(
             select(BrandsData).where(BrandsData.brand == brand).filter(BrandsData.category == category), conn).to_dict(
             'list')
-    return render_template("item_page.html", data=data, brand=brand, category=category, count_records=len(data['id']))
+    return render_template("items_page.html", data=data, brand=brand, category=category, count_records=len(data['id']))
+
+
+@app.route("/<brand>/<category>/<article>")
+async def item_detail(brand, category, article):
+    with db.engine.connect() as conn:
+        data = pd.read_sql_query(
+            select(BrandsData).where(BrandsData.article == article).filter(
+                BrandsData.category == category and BrandsData.brand == brand), conn
+        ).to_dict('list')
+    return render_template("item_page.html", data=data, count_records=len(data['id']))

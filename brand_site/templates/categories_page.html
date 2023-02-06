@@ -11,3 +11,8 @@
         {% endfor %}
     </div>
 {% endblock %}
+{% block footer %}
+    <footer class="back_button">
+        <a href="{{ url_for('server_app.main_page') }}">Назад</a>
+    </footer>
+{% endblock %}
