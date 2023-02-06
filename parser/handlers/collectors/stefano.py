@@ -91,16 +91,19 @@ class ParserStefano(BaseParser):
             async with session.get(
                     f"https://www.stefanoricci.com/svc/ServizioInformazioniProdotto.svc/Shop/Prodotti/OttieniInformazioniProdotto?codiceProdotto={sku}") as response:
                 data = await response.json()
-                article = data['Value']['CodiceProduttore'].split('.')[0]
-                title = data['Value']['Descrizione']['Breve'].split(' цвет')[0]
-                subtitle = '--'
-                for color_item in data['Value']['Raggruppamento']['DistintiveTerziarie']:
-                    if color_item['Nome']:
-                        color = color_item['Descrizione']
-                        break
-                try:
-                    details = re.search(r"<ul>[\s\S]*</ul>", data['Value']['Scheda']).group(0)
-                except AttributeError:
-                    details = '--'
-                images = {"photos": [image['ImmagineHD'] for image in data['Value']['Immagini']]}
-                await self.create_entry(article, title, subtitle, color, self.category, details, images)
+        article = data['Value']['CodiceProduttore'].split('.')[0]
+        title = data['Value']['Descrizione']['Breve'].split(' цвет')[0]
+        subtitle = '--'
+        for color_item in data['Value']['Raggruppamento']['DistintiveTerziarie']:
+            if color_item['Nome']:
+                color = color_item['Descrizione']
+                break
+        try:
+            details = re.search(r"<ul>[\s\S]*</ul>", data['Value']['Scheda']).group(0)
+            details = re.sub(r"<p>\D*</p>|<li>|</li>|<ul>|</ul>", '\n', details)
+            details = re.sub(r"\n \n", '\n', details)
+            details = re.sub(r"\n\n", '\n', details)
+        except AttributeError:
+            return
+        images = {"photos": [image['ImmagineHD'] for image in data['Value']['Immagini']]}
+        await self.create_entry(article, title, subtitle, color, self.category, details, images)

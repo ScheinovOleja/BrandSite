@@ -33,7 +33,10 @@ class BaseParser:
         pass
 
     async def main(self):
-        await self.get_all_products()
+        try:
+            await self.get_all_products()
+        except asyncio.exceptions.TimeoutError:
+            return
         rt = asyncio.create_task(self.releaser())
         await asyncio.gather(
             *[self.delay_wrapper(self.collect(product)) for product in self.all_products])

@@ -56,7 +56,6 @@ class ParserCeline(BaseParser):
                 async with session.get(url) as response:
                     soup = BeautifulSoup(await response.text(), 'lxml')
                     ok = response.ok
-                    print(ok)
         title = soup.find('span', class_="o-product__title-truncate").text
         subtitle = '--'
         color = soup.find('span', class_="o-product__title-color").text
@@ -69,7 +68,6 @@ class ParserCeline(BaseParser):
                 [item.text for item in soup.select_one(
                     "div.a-list:nth-child(2) > div > p").contents if
                  not isinstance(item, Tag)])
-            print(url)
         all_images = soup.select('li.m-thumb-carousel__item > button > img')
         images = {
             'photos': [image.get('src').split('?')[0] if image.get('src') else image.parent.get('data-pswp-src') for

@@ -26,6 +26,9 @@
                             {% else %}
                                 <span class="subtitle">{{ data['category'][i] }}</span>
                             {% endif %}
+                            {% if data['color'][i] %}
+                                <span class="subtitle">{{ data['color'][i] }}</span>
+                            {% endif %}
                         </h1>
                         <p class="ref">Артикул: {{ data['article'][i] }}</p>
                     </div>
