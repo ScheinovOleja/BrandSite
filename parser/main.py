@@ -164,41 +164,41 @@ class Parser:
                 "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?cgid=A0303&start=0&"
                 "sz=1000&selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A0303&start=0&sz=1000",
-                "Сумки 'Триумф'"
+                "Сумки 'TRIOMPHE'"
             ),
             (
                 "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?cgid=A0320&start=0&"
                 "sz=1000&selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A0320&start=0&sz=1000",
-                "Сумки 'Кожа Триумф'"
+                "Сумки 'CUIR TRIOMPHE'"
             ),
             (
                 "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A0311&start=0&sz=1000&"
                 "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A0311&start=0&sz=1000",
-                "Сумки 'Холс Триумф'"
+                "Сумки 'TRIOMPHE CANVAS'"
             ),
             (
                 "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A0317&start=0&sz=1000&"
                 "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A0317&start=0&sz=1000",
-                "Сумки 'АВА'"
+                "Сумки 'AVA'"
             ),
             (
                 "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A0314&start=0&sz=1000&"
                 "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A0314&start=0&sz=1000",
-                "Сумки 'Корзина'"
+                "Сумки 'CABAS'"
             ),
             (
                 "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A0305&start=0&sz=1000&"
                 "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A0305&start=0&sz=1000",
-                "Сумки 'Классическая'"
+                "Сумки 'Classic'"
             ),
             (
                 "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
@@ -219,7 +219,7 @@ class Parser:
                 "cgid=A0308&start=0&sz=1000&"
                 "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A0308&start=0&sz=1000",
-                "Сумки 'Больше линий'"
+                "Сумки 'MORE LINES'"
             ),
             (
                 "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
@@ -289,28 +289,28 @@ class Parser:
                 "cgid=A0046&start=0&sz=1000&"
                 "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A0046&start=0&sz=1000",
-                "Мелкие кожанные изделия"
+                "Аксессуары"
             ),
             (
                 "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A0040&start=0&sz=1000&"
                 "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A0040&start=0&sz=1000",
-                "Кошельки"
+                "Аксессуары"
             ),
             (
                 "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A0041&start=0&sz=1000&"
                 "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A0041&start=0&sz=1000",
-                "Визитницы"
+                "Аксессуары"
             ),
             (
                 "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A00106&start=0&sz=1000&"
                 "selectedUrl=https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"
                 "cgid=A00106&start=0&sz=1000",
-                "Кожаные изделия"
+                "Аксессуары"
             ),
             (
                 "https://www.celine.com/on/demandware.store/Sites-CELINE_WW-Site/en/Search-UpdateGrid?"

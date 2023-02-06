@@ -4,6 +4,8 @@ from server import db
 from sqlalchemy import select
 from utils.db.models import AllBrands, BrandsData
 
+from brand_site.server.funcs import translator
+
 app = Blueprint('server_app', __name__)
 
 
@@ -36,9 +38,21 @@ async def choice_item(brand, category):
 
 @app.route("/<brand>/<category>/<article>")
 async def item_detail(brand, category, article):
+    from langdetect import detect
     with db.engine.connect() as conn:
         data = pd.read_sql_query(
             select(BrandsData).where(BrandsData.article == article).filter(
                 BrandsData.category == category and BrandsData.brand == brand), conn
         ).to_dict('list')
+    for i in range(data['id']):
+        if detect(data["subtitle"][i]) == "en":
+            data["subtitle"][i] = await translator(data["subtitle"][i])
+        if detect(data["materials"][i]) == "en":
+            data["materials"][i] = await translator(data["materials"][i])
+        if detect(data["details"][i]) == "en":
+            data["details"][i] = await translator(data["details"][i])
+        if detect(data["color"][i]) == "en":
+            data["color"][i] = await translator(data["color"][i])
+        if detect(data["description"][i]) == "en":
+            data["description"][i] = await translator(data["color"][i])
     return render_template("item_page.html", data=data, count_records=len(data['id']))
