@@ -1,5 +1,6 @@
 import pandas as pd
 from flask import Blueprint, render_template
+from langdetect import LangDetectException
 from server import db
 from sqlalchemy import select
 from utils.db.models import AllBrands, BrandsData
@@ -44,15 +45,30 @@ async def item_detail(brand, category, article):
             select(BrandsData).where(BrandsData.article == article).filter(
                 BrandsData.category == category and BrandsData.brand == brand), conn
         ).to_dict('list')
-    for i in range(data['id']):
-        if detect(data["subtitle"][i]) == "en":
-            data["subtitle"][i] = await translator(data["subtitle"][i])
-        if detect(data["materials"][i]) == "en":
-            data["materials"][i] = await translator(data["materials"][i])
-        if detect(data["details"][i]) == "en":
-            data["details"][i] = await translator(data["details"][i])
-        if detect(data["color"][i]) == "en":
-            data["color"][i] = await translator(data["color"][i])
-        if detect(data["description"][i]) == "en":
-            data["description"][i] = await translator(data["color"][i])
+    for i in range(len(data['id'])):
+        try:
+            if detect(data["subtitle"][i]) == "en":
+                data["subtitle"][i] = await translator(data["subtitle"][i])
+        except LangDetectException:
+            pass
+        try:
+            if detect(data["materials"][i]) == "en":
+                data["materials"][i] = await translator(data["materials"][i])
+        except LangDetectException:
+            pass
+        try:
+            if detect(data["details"][i]) == "en":
+                data["details"][i] = await translator(data["details"][i])
+        except LangDetectException:
+            pass
+        try:
+            if detect(data["color"][i]) == "en":
+                data["color"][i] = await translator(data["color"][i])
+        except LangDetectException:
+            pass
+        try:
+            if detect(data["description"][i]) == "en":
+                data["description"][i] = await translator(data["color"][i])
+        except LangDetectException:
+            pass
     return render_template("item_page.html", data=data, count_records=len(data['id']))
