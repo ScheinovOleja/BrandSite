@@ -55,6 +55,6 @@
 {% endblock %}
 {% block footer %}
     <footer class="back_button">
-        <a href="{{ url_for('server_app.choice_item', brand=brand, category=category) }}">Назад</a>
+        <a href="{{ url_for('server_app.choice_item', brand=data['brand'][0], category=data['category'][0]) }}">Назад</a>
     </footer>
 {% endblock %}
