@@ -95,7 +95,7 @@ class ParserDior(BaseParser):
         async with ClientSession(headers=self.main_headers, connector=TCPConnector(verify_ssl=False)) as session:
             async with session.post(
                     self.url,
-                    json=self.main_body_bags if self.category == 'bags' else self.main_body_belts) as response:
+                    json=self.main_body_bags if self.category == 'Сумки' else self.main_body_belts) as response:
                 main_json = json.loads(await response.text())
         self.all_products = main_json['results'][0]['hits']
 
