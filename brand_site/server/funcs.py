@@ -33,6 +33,7 @@ async def get_photo_b64(photos):
 
 async def translator(text):
     async with ClientSession() as session:
+        text = text.replace('\n', '|')
         url = f"https://translate.google.com/m?sl=en&tl=ru&hl=en&q={text}"
         async with session.get(url) as response:
             soup = BeautifulSoup(await response.text(), 'lxml')
@@ -43,4 +44,4 @@ async def translator(text):
                 print('Слишком много запросов. Мы заблокированы(')
                 translated_text = text
     await asyncio.sleep(0.5)
-    return translated_text
+    return translated_text.replace('|', '\n')
