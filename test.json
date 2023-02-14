@@ -47,6 +47,14 @@
     {
       "name": "Tom Ford",
       "short_name": "ford"
+    },
+    {
+      "name": "Versace",
+      "short_name": "versace"
+    },
+    {
+      "name": "Zimmermann",
+      "short_name": "zimmermann"
     }
   ]
 }
