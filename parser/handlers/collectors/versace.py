@@ -23,6 +23,7 @@ class ParserVersace(BaseParser):
             "Accept-Encoding": "gzip, deflate, br"
         }
         self.status = 404
+        self.start = 0
 
     async def create_entry(self, article, title, subtitle, color, category, details, description, images):
         data = get_or_create(
@@ -46,16 +47,19 @@ class ParserVersace(BaseParser):
 
     async def get_all_products(self):
         async with ClientSession(headers=self.headers) as session:
-            while self.status != 200:
-                async with session.get(self.url) as response:
+            while True:
+                async with session.get(self.url.format(self.start)) as response:
                     if response.status != 200:
                         await asyncio.sleep(5)
                         self.status = response.status
                         continue
+                    if not await response.text():
+                        break
                     self.status = response.status
                     soup = BeautifulSoup(await response.text(), 'lxml')
-        self.all_products = [item.get('href') for item in
-                             soup.select("article > div.product-image > div > a")]
+                self.all_products.extend([item.get('href') for item in
+                                          soup.select("article > div.product-image > div > a")])
+                self.start += 25
 
     async def collect(self, url):
         async with ClientSession(headers=self.headers) as session:

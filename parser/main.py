@@ -374,9 +374,9 @@ class Parser:
             )
         ]
         self.links_versace = [
-            ("https://www.versace.com/international/en/women/clothing/?start=0&sz=300&format=page-element&currency=EUR",
+            ("https://www.versace.com/international/en/women/clothing/?start={}&sz=25&format=page-element&currency=EUR",
              "Одежда"),
-            ("https://www.versace.com/international/en/women/shoes/?start=0&sz=200&format=page-element&currency=EUR",
+            ("https://www.versace.com/international/en/women/shoes/?start={}&sz=25&format=page-element&currency=EUR",
              "Обувь")
         ]
         self.links_zimmermann = [
@@ -466,11 +466,11 @@ class Parser:
             task = threading.Thread(target=asyncio.run, args=(task_ford.main(),))
             task.start()
             task.join()
-        for link_zimmermann in self.links_zimmermann:
-            task_ford = ParserZimmermann(link_zimmermann, self.Session())
-            task = threading.Thread(target=asyncio.run, args=(task_ford.main(),))
-            task.start()
-            task.join()
+        # for link_zimmermann in self.links_zimmermann:
+        #     task_ford = ParserZimmermann(link_zimmermann, self.Session())
+        #     task = threading.Thread(target=asyncio.run, args=(task_ford.main(),))
+        #     task.start()
+        #     task.join()
 
 
 if __name__ == '__main__':
