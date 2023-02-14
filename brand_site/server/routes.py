@@ -15,7 +15,8 @@ async def main_page():
     with db.engine.connect() as con:
         data = pd.read_sql_query(
             select(AllBrands.name, AllBrands.short_name).join(BrandsData,
-                                                              AllBrands.short_name == BrandsData.brand).distinct(),
+                                                              AllBrands.short_name == BrandsData.brand).order_by(
+                AllBrands.name).distinct(),
             con).to_dict('list')
     return render_template("main_page.html", brand=data, count=len(data['name']))
 
