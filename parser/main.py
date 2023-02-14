@@ -17,8 +17,8 @@ from handlers.collectors.louis import ParserLouis
 from handlers.collectors.stefano import ParserStefano
 from handlers.collectors.zilli import ParserZilli
 from models import Base
-from parser.handlers.collectors.versace import ParserVersace
-from parser.handlers.collectors.zimmermann import ParserZimmermann
+from handlers.collectors.versace import ParserVersace
+from handlers.collectors.zimmermann import ParserZimmermann
 
 
 class Parser:
